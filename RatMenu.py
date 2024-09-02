@@ -43,7 +43,7 @@ Rat_spreader = None
 Rat_nuker = None
 Rat_crawler = None
 Rat_dehasher = None
-Rat_save = None  # Hinzugefügt für RatSave
+Rat_save = None
 
 username = None
 city = None
@@ -120,7 +120,7 @@ def initialize_scripts():
     Rat_nuker = find_script("RatSpreadSystemNuker.py")
     Rat_crawler = find_script("RatCrawler.py")
     Rat_dehasher = find_script("RatDeHasher.py")
-    Rat_save = find_script("RatSave.py")  # Hinzugefügt für RatSave
+    Rat_save = find_script("RatSave.py") 
 
     if SCRIPT_CHECK_ENABLED:
         start_stealer_executable = current_os == "windows" and bool(start_stealer)
@@ -132,7 +132,7 @@ def initialize_scripts():
         rat_nuker_executable = check_script_executable(Rat_nuker)
         rat_crawler_executable = check_script_executable(Rat_crawler)
         rat_dehasher_executable = check_script_executable(Rat_dehasher)
-        rat_save_executable = check_script_executable(Rat_save)  # Überprüfung für RatSave
+        rat_save_executable = check_script_executable(Rat_save) 
     else:
         start_stealer_executable = True
         rat_crypter_executable = True
@@ -143,7 +143,7 @@ def initialize_scripts():
         rat_nuker_executable = True
         rat_crawler_executable = True
         rat_dehasher_executable = True
-        rat_save_executable = True  # Setze Standard auf ausführbar
+        rat_save_executable = True 
 
     return {
         "start_stealer": start_stealer_executable,
@@ -155,7 +155,7 @@ def initialize_scripts():
         "Rat_nuker": rat_nuker_executable,
         "Rat_crawler": rat_crawler_executable,
         "Rat_dehasher": rat_dehasher_executable,
-        "Rat_save": rat_save_executable  # Hinzugefügt für RatSave
+        "Rat_save": rat_save_executable  
     }
 
 def print_menu(script_status):
@@ -187,7 +187,7 @@ def print_menu(script_status):
     print(mark_script('Encrypter', script_status['Rat_encrypter']))
     print(mark_script('Setup', script_status['Rat_setup']))
     print(mark_script('Phisher', script_status['Rat_phisher']))
-    print(mark_script('RatSave', script_status['Rat_save']))  # Zeige RatSave im Menü an
+    print(mark_script('RatSave', script_status['Rat_save'])) 
     
     print(" ")
 
@@ -324,7 +324,7 @@ def option8():
         print("RatPhisher.py konnte nicht gefunden werden.")
 
 def option9():
-    if Rat_save:  # Prüfen, ob RatSave vorhanden ist
+    if Rat_save:  
         debug("RatSave-Skript wird ausgeführt")
         subprocess.run(["python", Rat_save])
     else:
@@ -339,8 +339,8 @@ menu_options = {
     5: "Verschlüsselungsmenü starten",
     6: "Setup starten",
     7: "Phisher starten",
-    8: "RatSave starten",  # Hinzugefügt für RatSave
-    9: "Beenden"  # Beenden ist jetzt Option 9
+    8: "RatSave starten", 
+    9: "Beenden"  
 }
 
 def error_menu(error_message):
@@ -377,7 +377,7 @@ if __name__ == '__main__':
             elif option == 7:
                 option8()
             elif option == 8:
-                option9()  # Führe RatSave aus
+                option9()  
             elif option == 9:
                 debug("Programm wird beendet")
                 print('Danke für die Nutzung des Programms.')
