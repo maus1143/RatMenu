@@ -11,7 +11,7 @@ import importlib
 try:
     import RatSpreadVars
 except ImportError:
-    print("RatSpreadVars konnte nicht importiert werden. Verwende Platzhalterwerte.")
+    print("RatSpreadVars konnte nicht importiert werden. Verwende Platzhalter.")
     class RatSpreadVars:
         ascii = r"""
 ______      _   _____                          _      
@@ -29,7 +29,7 @@ ______ _                _           _     _
 | |   | | (_| | (_|  __/ | | | (_) | | (_| |  __/ |   
 \_|   |_|\__,_|\___\___|_| |_|\___/|_|\__,_|\___|_|
     """
-        titel = "=== RAT Spread Menu ==="
+        titel = "=== RatSpread Menu ==="
 
 try:
     import Settings
@@ -38,10 +38,10 @@ try:
     birthday = getattr(Settings, 'birthday', '01.01.1900')
     api_key = getattr(Settings, 'api_key', '41f0e608343eaec9c51769c4b41c019a')
 except ImportError:
-    print("Settings konnte nicht importiert werden. Verwende Platzhalterwerte.")
+    print("Settings konnte nicht importiert werden. Verwende Platzhalter")
     class Settings:
         username = 'DefaultUser'
-        city = 'DefaultCity'
+        city = 'Salzburg'
         birthday = '01.01.1900'
         api_key = '41f0e608343eaec9c51769c4b41c019a'
     username = Settings.username
@@ -52,7 +52,7 @@ except ImportError:
 DEBUG_MODE = True
 SCRIPT_CHECK_ENABLED = False
 threshold_temp = 22
-Version = "0.0.2"
+Version = "0.0.3"
 
 start_stealer = None
 Rat_crypter = None
@@ -69,14 +69,24 @@ today_date = datetime.now().strftime("%d.%m.%Y")
 aktuelle_zeit = time.strftime("%H:%M")
 current_os = platform.system().lower()
 
+def Start():
+    start_titles()
+    version()
+    willkommen()
+    weather()
+
+def start_titles():
+    print(f"{RatSpreadVars.ascii}")
+    print(f"{RatSpreadVars.titel}")
+
 def version():
     print(f"RatSpread {Version}")
 
-def Start():
-    print(f"{RatSpreadVars.ascii}")
-    print(f"{RatSpreadVars.titel}")
-    version()
-    willkommen()
+def weather():
+    weather_info = get_weather()
+    if weather_info:
+        print(weather_info)
+        print(" ")
 
 def Green():
     os.system("color 0a")
@@ -197,10 +207,6 @@ def print_menu(script_status):
 #==========================================    
     Start() #Start Anzeige, Ascii, etc
 #==========================================
-    weather_info = get_weather()
-    if weather_info:
-        print(weather_info)
-    print(" ")
 
     def mark_script(name, status):
         if status:
