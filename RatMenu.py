@@ -49,10 +49,18 @@ except ImportError:
     birthday = Settings.birthday
     api_key = Settings.api_key
 
-DEBUG_MODE = True
+DEBUG_MODE = False # Eingabe: 99
+STREAMER_MODE = False #Eingabe: 100
 SCRIPT_CHECK_ENABLED = False
-threshold_temp = 22
-Version = "0.0.3"
+threshold_temp = 23
+ 
+Version = "0.0.4"
+
+Show_Ascii = True
+Show_Streamermode = False
+Show_Debugmode = False
+Show_Version =  True
+Show_Welcomme = False
 
 start_stealer = None
 Rat_crypter = None
@@ -63,24 +71,77 @@ Rat_spreader = None
 Rat_nuker = None
 Rat_crawler = None
 Rat_dehasher = None
-Rat_save = None  
+Rat_save = None
 
 today_date = datetime.now().strftime("%d.%m.%Y")
 aktuelle_zeit = time.strftime("%H:%M")
 current_os = platform.system().lower()
 
 def Start():
+    clear()
+    color()
     start_titles()
+    show_debug()
+    show_streamer()
     version()
     willkommen()
     weather()
 
+def clear():
+    if not DEBUG_MODE:
+        os.system("cls" if os.name == "nt" else "clear")
+
+def color():
+    if os.name == "nt":
+        if DEBUG_MODE is True:
+            os.system("color 0f")
+            if Show_Debugmode is True:
+                os.system("color 0f")
+            elif Show_Debugmode is False:
+               os.system("color 0a")
+
 def start_titles():
-    print(f"{RatSpreadVars.ascii}")
-    print(f"{RatSpreadVars.titel}")
+    if Show_Ascii is True:
+        print(f"{RatSpreadVars.ascii}")
+        print(f"{RatSpreadVars.titel}")
+    else:
+        return
+
+def show_ascii():
+        global Show_Ascii
+        if Show_Ascii is True:
+            if DEBUG_MODE is True:
+                if Show_Debugmode is True:
+                    debug("Ascii Art deaktiviert")
+                    time.sleep(2)
+            Show_Ascii = False
+        elif Show_Ascii is False:                        
+            if DEBUG_MODE is True:
+                if Show_Debugmode is True:
+                    debug("Asci Art aktiviert")
+                    time.sleep(2)
+            Show_Ascii = True 
+
+def show_debug():
+    global show_debug
+    if Show_Debugmode is True:
+        if DEBUG_MODE is True:
+            print(f"Debug Modus: Aktiv\n") 
+    if Show_Debugmode is False:
+        return
+
+def show_streamer():
+    if Show_Streamermode is True:
+        if STREAMER_MODE is True:
+            print(f"Streamer Modus: Aktiv\n") 
+    if Show_Streamermode is False:
+        return 
 
 def version():
-    print(f"RatSpread {Version}")
+    if Show_Version is True:
+        print(f"RatSpread {Version}")
+    else: 
+        return
 
 def weather():
     weather_info = get_weather()
@@ -88,12 +149,58 @@ def weather():
         print(weather_info)
         print(" ")
 
-def Green():
-    os.system("color 0a")
-
 def debug(message):
-    if DEBUG_MODE:
+    global debug
+    if Show_Debugmode is False:
+        return
+    elif DEBUG_MODE is True:
         print(f"DEBUG: {message}")
+
+def debug_switch():
+        global DEBUG_MODE
+        if DEBUG_MODE is True:
+            if Show_Debugmode is True:
+                debug("Debug modus deaktiviert")
+                time.sleep(2)
+            DEBUG_MODE = False
+        elif DEBUG_MODE is False:
+            if Show_Debugmode is True:
+                debug("Debug modus aktiviert")
+                time.sleep(2)
+            DEBUG_MODE = True
+def streamer():
+    if STREAMER_MODE is True:
+        return
+
+def streamer_Switch():
+        global STREAMER_MODE
+        if STREAMER_MODE is True:
+            if DEBUG_MODE is True:
+                if Show_Debugmode is True:
+                    debug("Streamer modus deaktiviert")
+                    time.sleep(2)
+            STREAMER_MODE = False
+        elif STREAMER_MODE is False:                        
+            if DEBUG_MODE is True:
+                if Show_Debugmode is True:
+                    debug("Streamer modus aktiviert")
+                    time.sleep(2)
+            STREAMER_MODE = True 
+
+def show_wellcome():
+        global Show_Welcomme
+        if Show_Welcomme is True:
+            if DEBUG_MODE is True:
+                if Show_Debugmode is True:
+                    debug("Wilkommens anzeigen deaktiviert")
+                    time.sleep(2)
+            Show_Welcomme = False
+        elif STREAMER_MODE is False:                        
+            if Show_Welcomme is True:
+                if Show_Debugmode is True:
+                    debug("Willkommens anzeigen aktiviert")
+                    time.sleep(2)
+            Show_Welcomme = True 
 
 def find_script(script_name):
     for root, dirs, files in os.walk("."):
@@ -138,11 +245,19 @@ def get_weather():
                 exceed_time = forecast_time
                 break
 
-        temp_info = f"Aktuelle Temperatur in {city}: {current_temp}°C um {current_time.strftime('%H:%M')}"
-        if exceed_time:
-            temp_info += f"\nDie Temperatur wird voraussichtlich {threshold_temp}°C überschreiten am {exceed_time.strftime('%d.%m.%Y %H:%M')}."
-        else:
-            temp_info += f"\nDie Temperatur wird in den nächsten 5 Tagen voraussichtlich nicht {threshold_temp}°C überschreiten."
+        if STREAMER_MODE is False:
+            temp_info = f"Aktuelle Temperatur in {city}: {current_temp}°C um {current_time.strftime('%H:%M')}"
+            if exceed_time:
+                temp_info += f"\nDie Temperatur wird voraussichtlich {threshold_temp}°C überschreiten am {exceed_time.strftime('%d.%m.%Y %H:%M')}."
+            else:
+                temp_info += f"\nDie Temperatur wird in den nächsten 5 Tagen voraussichtlich nicht {threshold_temp}°C überschreiten."
+
+        if STREAMER_MODE is True:
+            temp_info = f"Aktuelle Temperatur in Zensiert: {current_temp}°C um {current_time.strftime('%H:%M')}"
+            if exceed_time:
+                temp_info += f"\nDie Temperatur wird voraussichtlich {threshold_temp}°C überschreiten am {exceed_time.strftime('%d.%m.%Y %H:%M')}."
+            else:
+                temp_info += f"\nDie Temperatur wird in den nächsten 5 Tagen voraussichtlich nicht {threshold_temp}°C überschreiten."
         
         return temp_info
     else:
@@ -200,10 +315,9 @@ def initialize_scripts():
 
 def print_menu(script_status):
     global aktuelle_zeit
-    if not DEBUG_MODE:
-        os.system("cls" if os.name == "nt" else "clear")
-        if os.name == "nt":
-            os.system("color 0a")
+    clear()
+    color()
+
 #==========================================    
     Start() #Start Anzeige, Ascii, etc
 #==========================================
@@ -230,8 +344,6 @@ def print_menu(script_status):
 
 def willkommen():
     print(" ")
-    global username, city
-
     try:
         stunde = int(time.strftime("%H"))
     except ValueError:
@@ -256,8 +368,11 @@ def willkommen():
     geburtstag = get_birthday()
     if geburtstag and geburtstag == today_date:
         gruß = f"Herzlichen Glückwunsch zum Geburtstag, {username}!"
-    print(f"{gruß}, {username}! Heute ist {wochentag} der {today_date}")
-    print(f"Wir haben {aktuelle_zeit} {grußend} {Version}")
+    if STREAMER_MODE is True:
+        print(f"{gruß}, Zensiert! Heute ist {wochentag} der {today_date}")
+    else:
+        print(f"{gruß}, {username}! Heute ist {wochentag} der {today_date}")
+    print(f"Wir haben {aktuelle_zeit} {grußend}")
 
 def get_birthday():
     try:
@@ -427,10 +542,8 @@ menu_options = {
 
 def error_menu(error_message):
     debug(f"Fehler aufgetreten: {error_message}")
-    if not DEBUG_MODE:
-        os.system("cls" if os.name == "nt" else "clear")
-        if os.name == "nt":
-            os.system("color 04")
+    clear()
+    color()
     print("Ein Fehler ist aufgetreten:")
     print(f"{error_message}")
     input("Drücke Enter, um fortzufahren...")
@@ -466,18 +579,27 @@ def main_menu():
                 option9()  
             elif option == 9:
                 debug("Programm wird beendet")
-                print('Danke für die Nutzung des Programms.')
+                print('RatSpread wird beendet')
                 sys.exit(0)
+            elif option == 99:
+                debug_switch()
+            elif option == 100:
+                streamer_Switch()
+            elif option == 200:
+                show_ascii()
             else:
                 debug(f"Ungültige Option ausgewählt: {option}")
                 print('Ungültige Option. Bitte eine Zahl zwischen 1 und 9 eingeben.')
         except KeyboardInterrupt:
-            debug("Strg+C im Hauptmenü gedrückt, Programm wird beendet")
-            print('\nProgramm beendet.')
-            sys.exit(0)
+            debug("Strg+C im Hauptmenü gedrückt, Script wird beendet")
+            if DEBUG_MODE is True:
+                debug(f"RatSpread wurde beendet")
+                sys.exit(0)
+            else:
+                clear()        
+                main_menu()
         except Exception as e:
             error_menu(str(e))
 
 if __name__ == "__main__":
-    Green()
     main_menu()
