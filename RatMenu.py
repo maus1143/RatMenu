@@ -7,6 +7,8 @@ import locale
 import platform
 import requests
 import importlib
+import threading
+import random
 
 try:
     import RatSpreadVars
@@ -54,13 +56,15 @@ STREAMER_MODE = False #Eingabe: 100
 SCRIPT_CHECK_ENABLED = False
 threshold_temp = 23
  
-Version = "0.0.4"
+Version = "0.0.5"
+
+DoNotChangeColor = True
 
 Show_Ascii = True
-Show_Streamermode = False
-Show_Debugmode = False
+Show_Streamermode = True
+Show_Debugmode = True
 Show_Version =  True
-Show_Welcomme = False
+Show_Welcomme = True
 
 start_stealer = None
 Rat_crypter = None
@@ -92,13 +96,14 @@ def clear():
         os.system("cls" if os.name == "nt" else "clear")
 
 def color():
-    if os.name == "nt":
-        if DEBUG_MODE is True:
-            os.system("color 0f")
-            if Show_Debugmode is True:
+    if DoNotChangeColor == False:
+        if os.name == "nt":
+            if DEBUG_MODE is True:
                 os.system("color 0f")
-            elif Show_Debugmode is False:
-               os.system("color 0a")
+                if Show_Debugmode is True:
+                    os.system("color 0f")
+                elif Show_Debugmode is False:
+                    os.system("color 0a")
 
 def start_titles():
     if Show_Ascii is True:
@@ -547,15 +552,78 @@ def error_menu(error_message):
     print("Ein Fehler ist aufgetreten:")
     print(f"{error_message}")
     input("Drücke Enter, um fortzufahren...")
-    # sys.exit(1)
+
+def change_color(option):
+    color_code = option.split()[-1]
+    if os.name == "nt": 
+        try:
+            os.system(f"color {color_code}") 
+            debug(f"Farbe geändert zu: {color_code}")
+        except Exception as e:
+            error_menu(f"Fehler beim Ändern der Farbe: {e}")
+    else:
+        print("Farbänderung wird nur unter Windows unterstützt.")
+
+
+
+def random_color():
+    """Generates a random color code suitable for Windows console."""
+    colors = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
+    return "0" + random.choice(colors)
+
+def disco():
+    if os.name == "nt":
+        try:
+            while disco_running:
+                color_code = random_color()
+                os.system(f"color {color_code}")  # Change the console color
+                time.sleep(0.1)  # Wait before changing the color again
+        except Exception as e:
+            error_menu(f"Fehler: {e}")
+    else:
+        print("Farbänderung wird nur unter Windows unterstützt.")
+
+def start_disco():
+    global disco_running
+    disco_running = True
+    threading.Thread(target=disco, daemon=True).start()
+
+def stop_disco():
+    global disco_running
+    disco_running = False
+
+def change_color(option):
+    color_code = option.split()[-1]  # Extract the color code from the option
+    if os.name == "nt":
+        try:
+            os.system(f"color {color_code}")  # Change the console color
+            debug(f"Farbe geändert zu: {color_code}")
+        except Exception as e:
+            error_menu(f"Fehler beim Ändern der Farbe: {e}")
+    else:
+        print("Farbänderung wird nur unter Windows unterstützt.")
 
 def main_menu():
     script_status = initialize_scripts()
     while True:
         try:
             print_menu(script_status)
+            option = input('Bitte wähle eine Option: ').lower()
+
+            if option.startswith("color "):
+                change_color(option)
+                continue
+
+            if option == "disco start":
+                start_disco()
+                continue
+
+            if option == "disco stop":
+                stop_disco()
+                continue
+
             try:
-                option = int(input('Bitte wähle eine Option: '))
+                option = int(option)
             except ValueError:
                 debug("Ungültige Eingabe: keine Zahl")
                 print('Ungültige Eingabe. Bitte eine Zahl eingeben ...')
@@ -576,8 +644,9 @@ def main_menu():
             elif option == 7:
                 option8()
             elif option == 8:
-                option9()  
+                option9()
             elif option == 9:
+                stop_disco()  # Ensure disco stops if the program ends
                 debug("Programm wird beendet")
                 print('RatSpread wird beendet')
                 sys.exit(0)
@@ -592,14 +661,16 @@ def main_menu():
                 print('Ungültige Option. Bitte eine Zahl zwischen 1 und 9 eingeben.')
         except KeyboardInterrupt:
             debug("Strg+C im Hauptmenü gedrückt, Script wird beendet")
-            if DEBUG_MODE is True:
-                debug(f"RatSpread wurde beendet")
+            stop_disco()  # Ensure disco stops if the program ends
+            if DEBUG_MODE:
+                debug("RatSpread wurde beendet")
                 sys.exit(0)
             else:
-                clear()        
+                clear()
                 main_menu()
         except Exception as e:
             error_menu(str(e))
 
 if __name__ == "__main__":
+    disco_running = False  # Initialize the disco_running flag
     main_menu()
