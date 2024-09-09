@@ -9,13 +9,7 @@ import requests
 import importlib
 import threading
 import random
-
-try:
-    import RatSpreadVars
-except ImportError:
-    print("RatSpreadVars konnte nicht importiert werden. Verwende Platzhalter.")
-    class RatSpreadVars:
-        ascii = r"""
+Placeholder = r""" 
 ______      _   _____                          _      
 | ___ \    | | /  ___|                        | |     
 | |_/ /__ _| |_\ `--. _ __  _ __ ___  __ _  __| |     
@@ -30,9 +24,20 @@ ______ _                _           _     _
 |  __/| |/ _` |/ __/ _ \ '_ \ / _ \| |/ _` |/ _ \ '__|
 | |   | | (_| | (_|  __/ | | | (_) | | (_| |  __/ |   
 \_|   |_|\__,_|\___\___|_| |_|\___/|_|\__,_|\___|_|
+"""
+try:
+    import RatSpreadVars
+except ImportError:
+    print("RatSpreadVars konnte nicht importiert werden. Verwende Platzhalter.")
+    time.sleep(2)
+    class RatSpreadVars:
+        ascii = f"""
+{Placeholder}
     """
         titel = "=== RatSpread Menu ==="
-
+        RatSave_titel = f"""
+{Placeholder}
+    """
 try:
     import Settings
     username = getattr(Settings, 'username', 'DefaultUser')
@@ -40,7 +45,8 @@ try:
     birthday = getattr(Settings, 'birthday', '01.01.1900')
     api_key = getattr(Settings, 'api_key', '41f0e608343eaec9c51769c4b41c019a')
 except ImportError:
-    print("Settings konnte nicht importiert werden. Verwende Platzhalter")
+    print("Settings konnte nicht importiert werden. Verwende Platzhalter.")
+    time.sleep(2)
     class Settings:
         username = 'DefaultUser'
         city = 'Salzburg'
@@ -167,10 +173,6 @@ def debug_switch():
             debug("Debug modus aktiviert")
             DEBUG_MODE = True
 
-def streamer():
-    if STREAMER_MODE is True:
-        return
-
 def streamer_Switch():
         global STREAMER_MODE
         if STREAMER_MODE is True:
@@ -182,19 +184,19 @@ def streamer_Switch():
 
 def show_wellcome():
         global Show_Welcomme
-        if DEBUG_MODE is True:
+        if Show_Welcomme is True:
             debug("Wilkommens anzeigen deaktiviert")
             Show_Welcomme = False
-        elif STREAMER_MODE is False:                        
+        elif Show_Welcomme is False:                        
             debug("Willkommens anzeigen aktiviert")
             Show_Welcomme = True 
 
 def lightmode_switch():
         global Light_mode
-        if DEBUG_MODE is True:
+        if Light_mode is True:
             debug("Light Mode deaktiviert")
             Light_mode = False
-        elif DEBUG_MODE is False:
+        elif Light_mode is False:
             debug("Light Mode aktiviert")
             Light_mode = True
 
@@ -313,7 +315,6 @@ def initialize_scripts():
         "Rat_save_yt": rat_save_yt_executable
 
     }
-
 
 def print_menu(script_status):
     global aktuelle_zeit
@@ -527,6 +528,8 @@ def RatSave_menu():
         3: "Zurück zum Hauptmenü"
     }
     while True:
+        clear()
+        print(f"{RatSpreadVars.RatSave_titel}")
         print("\nRatSave Menu:")
         for key, value in RatSave_menu_options.items():
             print(f"{key}: {value}")
@@ -689,6 +692,8 @@ def main_menu():
                 streamer_Switch()
             elif option == 200:
                 show_ascii()
+            elif option == 300:
+                lightmode_switch()
             else:
                 debug(f"Ungültige Option ausgewählt: {option}")
                 print('Ungültige Option. Bitte eine Zahl zwischen 1 und 9 eingeben.')
