@@ -33,6 +33,7 @@ except ImportError:
         ascii = f"{Placeholder}"
         titel = "=== RatSpread Menu ==="
         RatSave_titel = f"{Placeholder}"
+os.system("color 0a")
 try:
     import Settings
     username = getattr(Settings, 'username', 'DefaultUser')
@@ -52,16 +53,22 @@ except ImportError:
     birthday = Settings.birthday
     api_key = Settings.api_key
 
+#-------------------
+#True = An
+#False = Aus
+#-------------------
+
 DEBUG_MODE = False #Eingabe: 99
 STREAMER_MODE = False #Eingabe: 100
+DARKMODE = False #Bitte... bei allem was heilig ist.... lass den Darkmode an
 Show_Ascii = True #Eingabe: 200
 Show_Welcomme = True #Eingabe: 250
-Light_mode = False #Eingabe: 300
+Light_mode = False #Eingabe: 300 # mitr light ist Leicht gemeint
 
 SCRIPT_CHECK_ENABLED = False
 threshold_temp = 23
  
-Version = "0.0.7"
+Version = "0.0.8"
 
 DoNotChangeColor = False
 
@@ -85,27 +92,44 @@ Rat_save_yt = None
 today_date = datetime.now().strftime("%d.%m.%Y")
 aktuelle_zeit = time.strftime("%H:%M")
 current_os = platform.system().lower()
+if  DARKMODE is True:
+    end = '\033[0m'
+    red = '\033[91m'
+    green = '\033[92m'
+    white = '\033[97m'
+    dgreen = '\033[32m'
+    yellow = '\033[93m'
+    back = '\033[7;91m'
+    run = '\033[97m[~]\033[0m'
+    que = '\033[94m[?]\033[0m'
+    bad = '\033[91m[👎]\033[0m'
+    info = '\033[93m[!]\033[0m'
+    debug_symbol = '\033[92m[</>]\033[0m'
+    good = '\033[92m[+]\033[0m'
+    not_loadet = '\033[91m[✗]\033[0m'
+    loadet = '\033[92m[🗸]\033[0m'
+else: 
+    bad = '[✗]'
+    info = '[!]'
+    debug_symbol = '[</>]'
+    good = '[+]'
+    not_loadet = '[✗]'
+    loadet = '[🗸]'
 
-end = '\033[0m'
-red = '\033[91m'
-green = '\033[92m'
-white = '\033[97m'
-dgreen = '\033[32m'
-yellow = '\033[93m'
-back = '\033[7;91m'
-run = '\033[97m[~]\033[0m'
-que = '\033[94m[?]\033[0m'
-bad = '\033[91m[👎]\033[0m'
-info = '\033[93m[!]\033[0m'
-debug_symbol = '\033[92m[</>]\033[0m'
-good = '\033[92m[+]\033[0m'
-not_loadet = '\033[91m[✗]\033[0m'
-loadet = '\033[92m[🗸]\033[0m'
 
 def Start():
     if Light_mode is True:
         force_clear()
         color()
+    elif DARKMODE is False:
+        clear()
+        Whitemode_color()
+        start_titles()
+        version()
+        show_debug()
+        show_streamer()
+        willkommen()
+        weather()
     else:
         clear()
         color()
@@ -122,6 +146,10 @@ def clear():
 
 def force_clear():
     os.system("cls" if os.name == "nt" else "clear")
+
+def Whitemode_color():
+    if DARKMODE is False:
+        os.system("color f0")
 
 def color():
     if DoNotChangeColor == True:
@@ -648,8 +676,12 @@ def change_color(option):
         print("Farbänderung wird nur unter Windows unterstützt.")
 
 def random_color():
-    colors = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
-    return "0" + random.choice(colors)
+    if DARKMODE is True:
+        colors = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
+        return "0" + random.choice(colors)
+    else:
+        colors = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
+        return "f" + random.choice(colors)
 
 def disco():
     if os.name == "nt":
@@ -691,8 +723,12 @@ def main_menu():
     script_status = initialize_scripts()
     while True:
         try:
-            print_menu(script_status)
-            option = input('Bitte wähle eine Option: ').lower()
+            if DARKMODE is True:
+                print_menu(script_status)
+                option = input('Bitte wähle eine Option: ').lower()
+            else:
+                print_menu(script_status)
+                option = input('You sick Bastard: ').lower()
 
             if option == "disco start":
                 start_disco()
