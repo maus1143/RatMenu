@@ -1,3 +1,6 @@
+import time
+from RatMenu import Version
+
 ascii = r"""
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░
 ░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒████████████░░░░░░░░
@@ -104,8 +107,7 @@ RatStealer_titel = r"""
  |   | o888o  o888o `Y888""8o   "888" 8""88888P'    "888" `Y8bod8P' `Y888""8o o888o `Y8bod8P' d888b    |   |
  |   |                                                                                                 |   |
  |___|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|___|
-(_____)                                                                                               (_____)
-"""  
+(_____)                                                                                               (_____)"""  
 
 RatCrypter_titel = r"""
  _____                                                                                                        _____ 
@@ -171,5 +173,20 @@ RatPhisher_titel = r"""
  |   |                                                                                                       |   |
  |___|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|___|
 (_____)                                                                                                     (_____)"""
+
+RatSpreadVarsVersion = "0.0.1"
+
+print(f"{RatPhisher_titel}") 
+print(f"{RatCoder_titel}")
+print(f"{RatCrypter_titel}")
+print(f"{Ratdecoder_titel}")
+print(f"{RatSave_titel}")
+print(f"{RatCoder_titel}")
+print(f"{RatStealer_titel}")
+print(f"{titel}")
+print(f"{ascii}")
+print(f"Running RatSpreadVars {RatSpreadVarsVersion}")
+time.sleep(1)
+print(f"Starting RatMenu {Version}")
 
 # By Mausi Schmausi
