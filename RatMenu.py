@@ -12,7 +12,7 @@ import importlib
 import threading
 import random
 
-Version = "0.1.2"
+Version = "0.1.3"
 
 Placeholder = r""" 
 ______      _   _____                          _      
@@ -89,6 +89,7 @@ Rat_crawler = None
 Rat_dehasher = None
 Rat_save = None
 Rat_save_yt = None
+Rat_create = None 
 
 today_date = datetime.now().strftime("%d.%m.%Y")
 aktuelle_zeit = time.strftime("%H:%M")
@@ -947,4 +948,4 @@ def main_menu():
 
 if __name__ == "__main__":
     disco_running = False
-    main_menu
+    main_menu()
