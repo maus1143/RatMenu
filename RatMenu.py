@@ -12,7 +12,7 @@ import importlib
 import threading
 import random
 
-Version = "0.0.9"
+Version = "0.1.0"
 
 Placeholder = r""" 
 ______      _   _____                          _      
@@ -809,6 +809,10 @@ def main_menu():
 
             if option == "disco start":
                 start_disco()
+                continue
+
+            if option.startswith("color "):
+                change_color(option)
                 continue
 
             if option.startswith("start "):
