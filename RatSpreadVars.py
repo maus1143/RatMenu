@@ -3,6 +3,7 @@ from RatMenu import Version
 
 end = '\033[0m'
 red = '\033[91m'
+blue = '\033[94m'
 green = '\033[92m'
 white = '\033[97m'
 dgreen = '\033[32m'
@@ -16,6 +17,9 @@ debug_symbol = '\033[92m[</>]\033[0m'
 good = '\033[92m[🗸]\033[0m'
 not_loadet = '\033[91m[✗]\033[0m'
 loadet = '\033[92m[🗸]\033[0m'          
+
+def rat_print(message):
+    print(f"{message}")
 
 def rat_repeat(command_list, times):
     commands = command_list.split(", ")
@@ -52,9 +56,23 @@ def space(Value):
         Abstand()
         Abstand()
 
-def debug(message):
+def format_value(text):
+    try:
+        value = float(text)
+        return f"{yellow}{text}{white}"
+    except ValueError:
+        if text in ["True", "False", "true", "false"]:
+            return f"{yellow}{text}{white}"
+        return text
+
+def debug(text):
+    import datetime
     global debug
-    print(f"\n{debug_symbol} {message}")
+    formatted_text = " ".join([format_value(word) for word in text.split()])
+
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    print(f"{blue}{current_time}{end} {debug_symbol} {white}{formatted_text}{end}")
     sleep(4)
 
 def error(message):
@@ -251,7 +269,7 @@ good = '\033[92m[🗸]\033[0m'
 not_loadet = '\033[91m[✗]\033[0m'
 loadet = '\033[92m[🗸]\033[0m'
 
-RatSpreadVarsVersion = "0.0.3"
+RatSpreadVarsVersion = "0.0.4"
 
 print(f"{RatPhisher_titel}") 
 print(f"{RatCoder_titel}")
@@ -265,5 +283,6 @@ print(f"{ascii}")
 print(f"{white}Running RatSpreadVars {yellow}{RatSpreadVarsVersion}")
 time.sleep(1)
 print(f"{white}Starting RatMenu {yellow}{Version}{end}")
+time.sleep(1)
 
 # By Mausi Schmausi
