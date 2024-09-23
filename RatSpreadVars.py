@@ -1,6 +1,67 @@
 import time
 from RatMenu import Version
 
+end = '\033[0m'
+red = '\033[91m'
+green = '\033[92m'
+white = '\033[97m'
+dgreen = '\033[32m'
+yellow = '\033[93m'
+back = '\033[7;91m'
+run = '\033[97m[~]\033[0m'
+que = '\033[94m[?]\033[0m'
+bad = '\033[91m[!]\033[0m'
+info = '\033[93m[i]\033[0m'
+debug_symbol = '\033[92m[</>]\033[0m'
+good = '\033[92m[🗸]\033[0m'
+not_loadet = '\033[91m[✗]\033[0m'
+loadet = '\033[92m[🗸]\033[0m'          
+
+def rat_repeat(command_list, times):
+    commands = command_list.split(", ")
+    
+    for _ in range(times):
+        for command in commands:
+            eval(command)
+
+def rat_times(command, times):
+    for _ in range(times):
+        eval(command)
+      
+def clear():
+  import os
+  os.system("cls" if os.name == "nt" else "clear")
+
+def sleep(settime):
+    from time import sleep
+    time.sleep(settime)
+
+def Abstand():
+    print(" ")
+
+def space(Value):
+    global space
+    if Value == 1:
+        Abstand()
+    elif Value == 2:
+        Abstand()
+        Abstand()
+        Abstand()
+    elif Value == 3:
+        Abstand()
+        Abstand()
+        Abstand()
+
+def debug(message):
+    global debug
+    print(f"\n{debug_symbol} {message}")
+    sleep(4)
+
+def error(message):
+    global error
+    print(f"{bad}: {message}")
+    sleep(2)
+
 ascii = r"""
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░
 ░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒████████████░░░░░░░░
@@ -190,7 +251,7 @@ good = '\033[92m[🗸]\033[0m'
 not_loadet = '\033[91m[✗]\033[0m'
 loadet = '\033[92m[🗸]\033[0m'
 
-RatSpreadVarsVersion = "0.0.2"
+RatSpreadVarsVersion = "0.0.3"
 
 print(f"{RatPhisher_titel}") 
 print(f"{RatCoder_titel}")
