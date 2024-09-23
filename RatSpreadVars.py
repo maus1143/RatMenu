@@ -174,7 +174,23 @@ RatPhisher_titel = r"""
  |___|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|___|
 (_____)                                                                                                     (_____)"""
 
-RatSpreadVarsVersion = "0.0.1"
+end = '\033[0m'
+red = '\033[91m'
+green = '\033[92m'
+white = '\033[97m'
+dgreen = '\033[32m'
+yellow = '\033[93m'
+back = '\033[7;91m'
+run = '\033[97m[~]\033[0m'
+que = '\033[94m[?]\033[0m'
+bad = '\033[91m[!]\033[0m'
+info = '\033[93m[i]\033[0m'
+debug_symbol = '\033[92m[</>]\033[0m'
+good = '\033[92m[🗸]\033[0m'
+not_loadet = '\033[91m[✗]\033[0m'
+loadet = '\033[92m[🗸]\033[0m'
+
+RatSpreadVarsVersion = "0.0.2"
 
 print(f"{RatPhisher_titel}") 
 print(f"{RatCoder_titel}")
@@ -185,8 +201,8 @@ print(f"{RatCoder_titel}")
 print(f"{RatStealer_titel}")
 print(f"{titel}")
 print(f"{ascii}")
-print(f"Running RatSpreadVars {RatSpreadVarsVersion}")
+print(f"{white}Running RatSpreadVars {yellow}{RatSpreadVarsVersion}")
 time.sleep(1)
-print(f"Starting RatMenu {Version}")
+print(f"{white}Starting RatMenu {yellow}{Version}{end}")
 
 # By Mausi Schmausi
