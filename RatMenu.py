@@ -139,7 +139,7 @@ Secondary_color_theme = f"{yellow}"
 
 Script_status_color_found = f"{white}"
 
-Script_status_color_found_not_found = f"{red}"
+Script_status_color_not_found = f"{red}"
 
 options_color = f"{white}"
 
@@ -441,7 +441,7 @@ def print_menu(script_status):
         if status:
             return f"{loadet}{Script_status_color_found}{name}"
         else:
-            return f"{not_loadet}{Script_status_color_found_not_found} {name}"
+            return f"{not_loadet}{Script_status_color_not_found} {name}"
     
     print(mark_script('Stealer', script_status['start_stealer']))
     print(mark_script('Nuker', script_status['Rat_nuker']))
