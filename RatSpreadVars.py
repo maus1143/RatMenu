@@ -269,17 +269,26 @@ good = '\033[92m[🗸]\033[0m'
 not_loadet = '\033[91m[✗]\033[0m'
 loadet = '\033[92m[🗸]\033[0m'
 
-RatSpreadVarsVersion = "0.0.4"
+RatSpreadVarsVersion = "0.0.5"
 
-print(f"{RatPhisher_titel}") 
+print(f"{RatPhisher_titel}")
+time.sleep(0.05) 
 print(f"{RatCoder_titel}")
+time.sleep(0.05) 
 print(f"{RatCrypter_titel}")
+time.sleep(0.05) 
 print(f"{Ratdecoder_titel}")
+time.sleep(0.05) 
 print(f"{RatSave_titel}")
+time.sleep(0.05) 
 print(f"{RatCoder_titel}")
+time.sleep(0.05) 
 print(f"{RatStealer_titel}")
+time.sleep(0.05) 
 print(f"{titel}")
+time.sleep(0.05) 
 print(f"{ascii}")
+time.sleep(0.05) 
 print(f"{white}Running RatSpreadVars {yellow}{RatSpreadVarsVersion}")
 time.sleep(1)
 print(f"{white}Starting RatMenu {yellow}{Version}{end}")
