@@ -12,7 +12,7 @@ import importlib
 import threading
 import random
 
-Version = "0.1.0"
+Version = "0.1.1"
 
 Placeholder = r""" 
 ______      _   _____                          _      
@@ -73,10 +73,6 @@ SCRIPT_CHECK_ENABLED = False
 
 threshold_temp = 20
 
-normal_input = "Bitte wähle eine Option: "
-
-lightmode_input = "You sick Bastard: "
-
 Show_Streamermode = True
 Show_Debugmode = True
 Show_Version =  True
@@ -101,6 +97,7 @@ current_os = platform.system().lower()
 if  DARKMODE is True:
     end = '\033[0m'
     red = '\033[91m'
+    blue = '\033[94m'
     green = '\033[92m'
     white = '\033[97m'
     dgreen = '\033[32m'
@@ -115,12 +112,36 @@ if  DARKMODE is True:
     not_loadet = '\033[91m[✗]\033[0m'
     loadet = '\033[92m[🗸]\033[0m'
 else: 
+    end = ''
+    red = ''
+    blue = ''
+    green = ''
+    white = ''
+    dgreen = ''
+    yellow = ''
+    back = ''
+    run = '[~]'
+    que = '?]'
     bad = '[✗]'
     info = '[!]'
     debug_symbol = '[</>]'
     good = '[🗸]'
     not_loadet = '[✗]'
     loadet = '[🗸]'
+
+normal_input = f"{white}Bitte wähle eine Option: {yellow}"
+
+lightmode_input = f"You sick Bastard: "
+
+main_color_theme = f"{white}"
+
+Secondary_color_theme = f"{yellow}"
+
+Script_status_color_found = f"{white}"
+
+Script_status_color_found_not_found = f"{red}"
+
+options_color = f"{white}"
 
 def Start():
     if Light_mode is True:
@@ -167,8 +188,8 @@ def color():
 
 def start_titles():
     if Show_Ascii is True:
-        print(f"{RatSpreadVars.ascii}")
-        print(f"{RatSpreadVars.titel}")
+        print(f"{main_color_theme}{RatSpreadVars.ascii}")
+        print(f"{main_color_theme}{RatSpreadVars.titel}")
     else:
         return
 
@@ -185,7 +206,7 @@ def show_debug():
     global show_debug
     if Show_Debugmode is True:
         if DEBUG_MODE is True:
-            print(f"{debug_symbol} Debug Modus: Aktiv")
+            print(f"{main_color_theme}Debug Modus: {Secondary_color_theme}Aktiv{end}")
     if Show_Debugmode is False:
         return
     if show_streamer and STREAMER_MODE is True:
@@ -213,13 +234,13 @@ def space(Value):
 def show_streamer():
     if Show_Streamermode is True:
         if STREAMER_MODE is True:
-            print(f"Streamer Modus: Aktiv") 
+            print(f"{main_color_theme}Streamer Modus: {Secondary_color_theme}Aktiv{end}") 
     if Show_Streamermode is False:
         return 
 
 def version():
     if Show_Version is True:
-        print(f"RatSpread {Version}")
+        print(f"{main_color_theme}RatSpread Version: {Secondary_color_theme}{Version}")
     if show_debug and DEBUG_MODE is True:
         space(1)
     else: 
@@ -231,10 +252,23 @@ def weather():
         print(weather_info)
         print(" ")
 
-def debug(message):
+def format_value(text):
+    try:
+        value = float(text)
+        return f"{Secondary_color_theme}{text}{main_color_theme}"
+    except ValueError:
+        if text in ["True", "False", "true", "false"]:
+            return f"{Secondary_color_theme}{text}{main_color_theme}"
+        return text
+
+def debug(text):
     global debug
     if DEBUG_MODE is True:
-        print(f"\n{debug_symbol} {message}")
+        formatted_text = " ".join([format_value(word) for word in text.split()])
+
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+        print(f"{blue}{current_time}{end} {debug_symbol} {main_color_theme}{formatted_text}{end}")
         sleep(4)
 
 def error(message):
@@ -322,18 +356,18 @@ def get_weather():
                 break
 
         if STREAMER_MODE is False:
-            temp_info = f"Aktuelle Temperatur in {city}: {current_temp}°C um {current_time.strftime('%H:%M')}"
+            temp_info = f"{main_color_theme}Aktuelle Temperatur in {Secondary_color_theme}{city}{main_color_theme}: {green}{current_temp}{main_color_theme}°C um {Secondary_color_theme}{current_time.strftime('%H:%M')}{end}"
             if exceed_time:
-                temp_info += f"\nDie Temperatur wird voraussichtlich {threshold_temp}°C überschreiten am {exceed_time.strftime('%d.%m.%Y %H:%M')}."
+                temp_info += f"\n{main_color_theme}Die Temperatur wird voraussichtlich {green}{threshold_temp}{main_color_theme}°C überschreiten am {dgreen}{exceed_time.strftime(f'%d.%m.%Y {main_color_theme}um {Secondary_color_theme}%H:%M')}{main_color_theme}.{end}"
             else:
-                temp_info += f"\nDie Temperatur wird in den nächsten 5 Tagen voraussichtlich nicht {threshold_temp}°C überschreiten."
+                temp_info += f"\n{main_color_theme}Die Temperatur wird in den nächsten 5 Tagen voraussichtlich nicht {threshold_temp}{main_color_theme}°C überschreiten."
 
         if STREAMER_MODE is True:
-            temp_info = f"Aktuelle Temperatur in Zensiert: {current_temp}°C um {current_time.strftime('%H:%M')}"
+            temp_info = f"{main_color_theme}Aktuelle Temperatur in {Secondary_color_theme}Zensiert{main_color_theme}: {green}{current_temp}{main_color_theme}°C um {Secondary_color_theme}{current_time.strftime('%H:%M')}{end}"
             if exceed_time:
-                temp_info += f"\nDie Temperatur wird voraussichtlich {threshold_temp}°C überschreiten am {exceed_time.strftime('%d.%m.%Y %H:%M')}."
+                temp_info += f"\n{main_color_theme}Die Temperatur wird voraussichtlich {green}{threshold_temp}{main_color_theme}°C überschreiten am {dgreen}{exceed_time.strftime(f'%d.%m.%Y {main_color_theme}um {Secondary_color_theme}%H:%M')}{main_color_theme}.{end}"
             else:
-                temp_info += f"\nDie Temperatur wird in den nächsten 5 Tagen voraussichtlich nicht {threshold_temp}°C überschreiten."
+                temp_info += f"\n{main_color_theme}Die Temperatur wird in den nächsten 5 Tagen voraussichtlich nicht {green}{threshold_temp}{main_color_theme}°C überschreiten."
         
         return temp_info
     else:
@@ -405,9 +439,9 @@ def print_menu(script_status):
 
     def mark_script(name, status):
         if status:
-            return f"{loadet}{name}"
+            return f"{loadet}{Script_status_color_found}{name}"
         else:
-            return f"{not_loadet} {name}"
+            return f"{not_loadet}{Script_status_color_found_not_found} {name}"
     
     print(mark_script('Stealer', script_status['start_stealer']))
     print(mark_script('Nuker', script_status['Rat_nuker']))
@@ -423,7 +457,7 @@ def print_menu(script_status):
     print(" ")
 
     for key, value in menu_options.items():
-        print(f"{key}: {value}")
+        print(f"{options_color}{key}: {value}")
 
 def willkommen():
     global show_wellcome, Show_Welcomme
@@ -452,12 +486,12 @@ def willkommen():
 
         geburtstag = get_birthday()
         if geburtstag and geburtstag == today_date:
-            gruß = f"Herzlichen Glückwunsch zum Geburtstag, {username}!"
+            gruß = f"{main_color_theme}Herzlichen Glückwunsch zum Geburtstag, {Secondary_color_theme}{username}!"
         if STREAMER_MODE is True:
-            print(f"{gruß}, Zensiert! Heute ist {wochentag} der {today_date}")
+            print(f"{main_color_theme}{gruß}, {Secondary_color_theme}Zensiert!{main_color_theme} Heute ist {Secondary_color_theme}{wochentag}{main_color_theme} der {green}{today_date}")
         else:
-            print(f"{gruß}, {username}! Heute ist {wochentag} der {today_date}")
-        print(f"Wir haben {aktuelle_zeit} {grußend}")
+            print(f"{main_color_theme}{gruß}, {Secondary_color_theme}{username}{main_color_theme}! Heute ist {Secondary_color_theme}{wochentag}{main_color_theme} der {green}{today_date}")
+        print(f"{main_color_theme}Wir haben {Secondary_color_theme}{aktuelle_zeit}{main_color_theme} Uhr {grußend}")
     else:
         return
 
@@ -764,7 +798,7 @@ def stop_disco():
     disco_running = False
         
 def Reload():
-    print("RatSpread wird Neugeladen")
+    print(f"{main_color_theme}RatSpread wird Neugeladen")
     debug("Programm wird neu geladen")
     os.system("call RatMenu.py")
     sys.exit(0)
@@ -802,7 +836,8 @@ def main_menu():
         try:
             if DARKMODE is True:
                 print_menu(script_status)
-                option = input(f'{normal_input}').lower()
+                option = input(f'{Secondary_color_theme}{normal_input}').lower()
+                print(f"{end}")
             else:
                 print_menu(script_status)
                 option = input(f'{lightmode_input}').lower()
@@ -840,7 +875,7 @@ def main_menu():
                 option = int(option)
             except ValueError:
                 debug(f'"{option}" ist keine gültige Eingabe')
-                print('Ungültige Eingabe. Bitte eine Zahl eingeben ...')
+                print(f'{main_color_theme}Ungültige Eingabe. Bitte eine Zahl eingeben ...')
                 continue
 
             if option == 1:
@@ -864,7 +899,7 @@ def main_menu():
             elif option == 10:
                 stop_disco()
                 debug("Programm wird beendet")
-                print('RatSpread wird beendet')
+                print(f'{main_color_theme}RatSpread wird beendet')
                 sys.exit(0)
             elif option == 99:
                 debug_switch()
@@ -878,7 +913,7 @@ def main_menu():
                 lightmode_switch()
             else:
                 debug(f"Ungültige Option ausgewählt: {option}")
-                print('Ungültige Option. Bitte eine Zahl zwischen 1 und 9 eingeben.')
+                print(f'{main_color_theme}Ungültige Option. Bitte eine Zahl zwischen 1 und 10 eingeben.')
         except KeyboardInterrupt:
             if DEBUG_MODE is True:
                 stop_disco()
