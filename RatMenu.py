@@ -12,7 +12,7 @@ import importlib
 import threading
 import random
 
-Version = "0.1.3"
+Version = "0.1.4"
 
 Placeholder = r""" 
 ______      _   _____                          _      
@@ -764,11 +764,21 @@ def error_menu(error_message):
         log_file.write(error_report)
 
 def change_color(option):
-    global change_color
+    global change_color, main_color_theme
     color_code = option.split()[-1]
     if os.name == "nt": 
         try:
             os.system(f"color {color_code}") 
+            if color_code == "0a":
+                main_color_theme = f"{green}"
+            if color_code == "0f":
+                main_color_theme = f"{white}"
+            if color_code == "0c":
+                main_color_theme = f"{red}"
+            if color_code == "04":
+                main_color_theme = f"{red}"
+            if color_code == "0e":
+                main_color_theme = f"{yellow}"
             debug(f"Farbe geändert zu: {color_code}")
         except Exception as e:
             debug(f"{bad} Fehler beim Ändern der Farbe: {e}")
