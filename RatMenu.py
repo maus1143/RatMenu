@@ -1,6 +1,8 @@
 import os
 import subprocess
 import time
+import traceback
+import datetime
 from datetime import datetime
 import sys
 import locale
@@ -9,6 +11,9 @@ import requests
 import importlib
 import threading
 import random
+
+Version = "0.0.9"
+
 Placeholder = r""" 
 ______      _   _____                          _      
 | ___ \    | | /  ___|                        | |     
@@ -33,7 +38,6 @@ except ImportError:
         ascii = f"{Placeholder}"
         titel = "=== RatSpread Menu ==="
         RatSave_titel = f"{Placeholder}"
-os.system("color 0a")
 try:
     import Settings
     username = getattr(Settings, 'username', 'DefaultUser')
@@ -55,22 +59,23 @@ except ImportError:
 
 #-------------------
 #True = An
-#False = Aus
+#False = Aus 
 #-------------------
 
 DEBUG_MODE = False #Eingabe: 99
 STREAMER_MODE = False #Eingabe: 100
-DARKMODE = False #Bitte... bei allem was heilig ist.... lass den Darkmode an
+DARKMODE = True #Bitte... bei allem was heilig ist.... lass den Darkmode an
 Show_Ascii = True #Eingabe: 200
 Show_Welcomme = True #Eingabe: 250
 Light_mode = False #Eingabe: 300 # mitr light ist Leicht gemeint
-
+DoNotChangeColor = True
 SCRIPT_CHECK_ENABLED = False
-threshold_temp = 23
- 
-Version = "0.0.8"
 
-DoNotChangeColor = False
+threshold_temp = 20
+
+normal_input = "Bitte wähle eine Option: "
+
+lightmode_input = "You sick Bastard: "
 
 Show_Streamermode = True
 Show_Debugmode = True
@@ -92,6 +97,7 @@ Rat_save_yt = None
 today_date = datetime.now().strftime("%d.%m.%Y")
 aktuelle_zeit = time.strftime("%H:%M")
 current_os = platform.system().lower()
+
 if  DARKMODE is True:
     end = '\033[0m'
     red = '\033[91m'
@@ -102,26 +108,26 @@ if  DARKMODE is True:
     back = '\033[7;91m'
     run = '\033[97m[~]\033[0m'
     que = '\033[94m[?]\033[0m'
-    bad = '\033[91m[👎]\033[0m'
-    info = '\033[93m[!]\033[0m'
+    bad = '\033[91m[!]\033[0m'
+    info = '\033[93m[i]\033[0m'
     debug_symbol = '\033[92m[</>]\033[0m'
-    good = '\033[92m[+]\033[0m'
+    good = '\033[92m[🗸]\033[0m'
     not_loadet = '\033[91m[✗]\033[0m'
     loadet = '\033[92m[🗸]\033[0m'
 else: 
     bad = '[✗]'
     info = '[!]'
     debug_symbol = '[</>]'
-    good = '[+]'
+    good = '[🗸]'
     not_loadet = '[✗]'
     loadet = '[🗸]'
-
 
 def Start():
     if Light_mode is True:
         force_clear()
         color()
     elif DARKMODE is False:
+        color()
         clear()
         Whitemode_color()
         start_titles()
@@ -152,7 +158,7 @@ def Whitemode_color():
         os.system("color f0")
 
 def color():
-    if DoNotChangeColor == True:
+    if DoNotChangeColor is False:
         if os.name == "nt":
             if DEBUG_MODE is True:
                 os.system("color 0f")
@@ -185,6 +191,9 @@ def show_debug():
     if show_streamer and STREAMER_MODE is True:
         space(1)
 
+def sleep(settime):
+    time.sleep(settime)
+
 def Abstand():
     print(" ")
 
@@ -193,6 +202,7 @@ def space(Value):
     if Value == 1:
         Abstand()
     elif Value == 2:
+        Abstand()
         Abstand()
         Abstand()
     elif Value == 3:
@@ -224,13 +234,13 @@ def weather():
 def debug(message):
     global debug
     if DEBUG_MODE is True:
-        print(f"{debug_symbol} DEBUG: {message}")
-        time.sleep(4)
+        print(f"\n{debug_symbol} {message}")
+        sleep(4)
 
 def error(message):
     global error
-    print(f"{bad} {message}")
-    time.sleep(2)
+    print(f"{bad}: {message}")
+    sleep(2)
 
 def debug_switch():
         global DEBUG_MODE
@@ -330,7 +340,7 @@ def get_weather():
         return f"{bad} Fehler: Keine Vorhersagedaten gefunden."
 
 def initialize_scripts():
-    global start_stealer, Rat_crypter, Rat_encrypter, Rat_setup, Rat_phisher, Rat_spreader, Rat_nuker, Rat_crawler, Rat_dehasher, Rat_save, Rat_save_yt
+    global start_stealer, Rat_crypter, Rat_encrypter, Rat_setup, Rat_phisher, Rat_spreader, Rat_nuker, Rat_crawler, Rat_dehasher, Rat_save, Rat_save_yt, Rat_create
 
     start_stealer = find_script("start_stealer_win.bat")
     Rat_crypter = find_script("Ratcodierung.py")
@@ -343,6 +353,7 @@ def initialize_scripts():
     Rat_dehasher = find_script("RatDeHasher.py")
     Rat_save = find_script("RatSave.py")  
     Rat_save_yt = find_script("RatSave_yt.py")  
+    Rat_create = find_script("RatCreate.py")  
 
     if SCRIPT_CHECK_ENABLED:
         start_stealer_executable = current_os == "windows" and bool(start_stealer)
@@ -356,6 +367,7 @@ def initialize_scripts():
         rat_dehasher_executable = check_script_executable(Rat_dehasher)
         rat_save_executable = check_script_executable(Rat_save)  
         rat_save_yt_executable = check_script_executable(Rat_save_yt)  
+        rat_create_executable = check_script_executable(Rat_create)  
     else:
         start_stealer_executable = bool(start_stealer)
         rat_crypter_executable = bool(Rat_crypter)
@@ -367,7 +379,8 @@ def initialize_scripts():
         rat_crawler_executable = bool(Rat_crawler)
         rat_dehasher_executable = bool(Rat_dehasher)
         rat_save_executable = bool(Rat_save) 
-        rat_save_yt_executable = bool(Rat_save_yt)  
+        rat_save_yt_executable = bool(Rat_save_yt)
+        rat_create_executable  = bool(Rat_create)
 
     return {
         "start_stealer": start_stealer_executable,
@@ -380,8 +393,8 @@ def initialize_scripts():
         "Rat_crawler": rat_crawler_executable,
         "Rat_dehasher": rat_dehasher_executable,
         "Rat_save": rat_save_executable,
-        "Rat_save_yt": rat_save_yt_executable
-
+        "Rat_save_yt": rat_save_yt_executable,
+        "Rat_create": rat_create_executable
     }
 
 def print_menu(script_status):
@@ -394,7 +407,7 @@ def print_menu(script_status):
         if status:
             return f"{loadet}{name}"
         else:
-            return f"{not_loadet}{name}"
+            return f"{not_loadet} {name}"
     
     print(mark_script('Stealer', script_status['start_stealer']))
     print(mark_script('Nuker', script_status['Rat_nuker']))
@@ -406,6 +419,7 @@ def print_menu(script_status):
     print(mark_script('Phisher', script_status['Rat_phisher']))
     print(mark_script('RatSave', script_status['Rat_save'])) 
     print(mark_script('RatSave YT', script_status['Rat_save_yt'])) 
+    print(mark_script('RatCreate', script_status['Rat_create'])) 
     print(" ")
 
     for key, value in menu_options.items():
@@ -506,6 +520,7 @@ def RatCrawler():
 def RatDehasher():
     if Rat_dehasher:
         debug("DeHasher-Skript wird ausgeführt")
+        clear()
         try:
             subprocess.run(["python", Rat_dehasher], check=True)
         except subprocess.CalledProcessError as e:
@@ -529,7 +544,10 @@ def verschluesselungs_menu():
             print(f"{key}: {value}")
         
         try:
-            option = int(input('Bitte wähle eine Option: '))
+            if DARKMODE is False:
+                option = int(input(f'{lightmode_input}'))
+            else:
+                option = int(input(f'{normal_input}'))
             if option == 1:
                 RatCrypter()
             elif option == 2:
@@ -605,7 +623,11 @@ def RatSave_menu():
         for key, value in RatSave_menu_options.items():
             print(f"{key}: {value}")
         try:
-            option = int(input('Bitte wähle eine Option: '))
+            if DARKMODE is False:
+                option = int(input(f'{lightmode_input} '))
+            else:
+                option = int(input(f'{normal_input} '))
+
             if option == 1:
                 RatSave()
             elif option == 2:
@@ -643,6 +665,17 @@ def RatSave_yt():
         debug("RatSave-Skript nicht gefunden.")
         print("RatSave_yt.py konnte nicht gefunden werden.")
 
+def RatCreate():
+    if Rat_create:
+        debug("RatCreate-Skript wird ausgeführt")
+        try:
+            subprocess.run(["python", Rat_create], check=True)
+        except subprocess.CalledProcessError as e:
+            error_menu(f"{bad} Fehler beim Ausführen des RatCreate-Skripts: {e}")
+    else:
+        debug("RatCreate-Skript nicht gefunden.")
+        print("RatCreate.py konnte nicht gefunden werden.")
+
 menu_options = {
     1: "Stealer starten",
     2: "Nuker starten",
@@ -652,16 +685,42 @@ menu_options = {
     6: "Setup starten",
     7: "Phisher starten",
     8: "RatSaveMenu starten", 
-    9: "Beenden" 
+    9: "RatCreate starten", 
+    10: "Beenden" 
 }
 
 def error_menu(error_message):
+    import traceback
+    import sys
+    import datetime
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    exc_type, exc_value, exc_traceback = sys.exc_info()
+    traceback_details = ''.join(traceback.format_tb(exc_traceback))
+    
+    error_report = f"""
+    Fehlerbericht:
+    Zeit: {timestamp}
+    Fehlerart: {exc_type.__name__}
+    Fehlernachricht: {error_message}
+    Traceback:
+    {traceback_details}
+    """
+    
     debug(f"{bad} Fehler aufgetreten: {error_message}")
+    
     clear()
     color()
-    print(F"Ein {bad} Fehler ist aufgetreten:")
+    
+    print(f"Ein {bad} Fehler ist aufgetreten:")
     print(f"{error_message}")
+    print("\nDetaillierter Fehlerbericht:")
+    print(error_report)
+    
     input("Drücke Enter, um fortzufahren...")
+    
+    with open("error_log.txt", "a") as log_file:
+        log_file.write(error_report)
 
 def change_color(option):
     global change_color
@@ -689,11 +748,11 @@ def disco():
             while disco_running:
                 color_code = random_color()
                 os.system(f"color {color_code}")
-                time.sleep(0.1)
+                sleep(0.1)
         except Exception as e:
             error_menu(f"{bad} Fehler: {e}")
     else:
-        print("Farbänderung wird nur unter Windows unterstützt.")
+        print("Der Disco modus wird nur unter Windows unterstützt.")
 
 def start_disco():
     global disco_running
@@ -714,10 +773,28 @@ def wko():
     global wko
     force_clear()
     start_disco()
-    print("ᶠᶸᶜᵏᵧₒᵤ!")
-    time.sleep(1)
-    debug("ᶠᶸᶜᵏᵧₒᵤ!")
+    print("test")
+    sleep(1)
+    debug("test")
     wko()
+
+def start_script(script_name):
+    if os.path.exists(script_name):
+        file_extension = os.path.splitext(script_name)[1]
+
+        try:
+            if file_extension == '.py':
+                subprocess.run(['python', script_name])  
+            elif file_extension == '.bat':
+                subprocess.run(['call', script_name], shell=True)  
+            elif file_extension == '.sh':
+                subprocess.run(['bash', script_name], shell=True)  
+            else:
+                print(f"Unbekanntes Dateiformat: {file_extension}")
+        except Exception as e:
+            print(f"Fehler beim Ausführen des Skripts: {e}")
+    else:
+        print(f"Skript '{script_name}' nicht gefunden.")
 
 def main_menu():
     script_status = initialize_scripts()
@@ -725,14 +802,19 @@ def main_menu():
         try:
             if DARKMODE is True:
                 print_menu(script_status)
-                option = input('Bitte wähle eine Option: ').lower()
+                option = input(f'{normal_input}').lower()
             else:
                 print_menu(script_status)
-                option = input('You sick Bastard: ').lower()
+                option = input(f'{lightmode_input}').lower()
 
             if option == "disco start":
                 start_disco()
                 continue
+
+            if option.startswith("start "):
+                script_name = option[6:].strip() 
+                start_script(script_name)
+                sys.exit(0) 
 
             if option == "disco stop":
                 stop_disco()
@@ -745,18 +827,15 @@ def main_menu():
             if option == "clear":
                 force_clear()
                 continue
+
             if option == "wko":
                 wko()
-
-                continue
-            if option.startswith("color "):
-                change_color(option)
                 continue
             
             try:
                 option = int(option)
             except ValueError:
-                debug("Ungültige Eingabe: keine Zahl")
+                debug(f'"{option}" ist keine gültige Eingabe')
                 print('Ungültige Eingabe. Bitte eine Zahl eingeben ...')
                 continue
 
@@ -777,6 +856,8 @@ def main_menu():
             elif option == 8:
                 RatSave_menu()
             elif option == 9:
+                RatCreate()
+            elif option == 10:
                 stop_disco()
                 debug("Programm wird beendet")
                 print('RatSpread wird beendet')
@@ -789,7 +870,6 @@ def main_menu():
                 show_ascii()
             elif option == 250:
                 show_wellcome()
-                show_wellcome
             elif option == 300:
                 lightmode_switch()
             else:
@@ -798,6 +878,7 @@ def main_menu():
         except KeyboardInterrupt:
             if DEBUG_MODE is True:
                 stop_disco()
+                print(" ")
                 debug("Strg+C im Hauptmenü gedrückt, Script wird beendet")
                 sys.exit(0)
             else:
