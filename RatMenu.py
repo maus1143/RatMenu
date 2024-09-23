@@ -12,7 +12,7 @@ import importlib
 import threading
 import random
 
-Version = "0.1.1"
+Version = "0.1.2"
 
 Placeholder = r""" 
 ______      _   _____                          _      
@@ -129,10 +129,6 @@ else:
     not_loadet = '[✗]'
     loadet = '[🗸]'
 
-normal_input = f"{white}Bitte wähle eine Option: {yellow}"
-
-lightmode_input = f"You sick Bastard: "
-
 main_color_theme = f"{white}"
 
 Secondary_color_theme = f"{yellow}"
@@ -142,6 +138,11 @@ Script_status_color_found = f"{white}"
 Script_status_color_not_found = f"{red}"
 
 options_color = f"{white}"
+
+normal_input = f"{main_color_theme}Bitte wähle eine Option: {Secondary_color_theme}"
+
+lightmode_input = f"You sick Bastard: "
+
 
 def Start():
     if Light_mode is True:
@@ -167,6 +168,16 @@ def Start():
         willkommen()
         weather()
 
+def rat_repeat(command_list, times):
+    commands = command_list.split(", ")
+    
+    for _ in range(times):
+        for command in commands:
+            eval(command)
+
+def rat_print(message):
+    print(f"{message}")
+
 def clear():
     if not DEBUG_MODE:
         os.system("cls" if os.name == "nt" else "clear")
@@ -188,8 +199,8 @@ def color():
 
 def start_titles():
     if Show_Ascii is True:
-        print(f"{main_color_theme}{RatSpreadVars.ascii}")
-        print(f"{main_color_theme}{RatSpreadVars.titel}")
+        rat_print(f"{main_color_theme}{RatSpreadVars.ascii}")
+        rat_print(f"{main_color_theme}{RatSpreadVars.titel}")
     else:
         return
 
@@ -206,7 +217,7 @@ def show_debug():
     global show_debug
     if Show_Debugmode is True:
         if DEBUG_MODE is True:
-            print(f"{main_color_theme}Debug Modus: {Secondary_color_theme}Aktiv{end}")
+            rat_print(f"{main_color_theme}Debug Modus: {Secondary_color_theme}Aktiv{end}")
     if Show_Debugmode is False:
         return
     if show_streamer and STREAMER_MODE is True:
@@ -216,31 +227,26 @@ def sleep(settime):
     time.sleep(settime)
 
 def Abstand():
-    print(" ")
+    rat_print(" ")
 
 def space(Value):
     global space
     if Value == 1:
         Abstand()
     elif Value == 2:
-        Abstand()
-        Abstand()
-        Abstand()
+        rat_repeat(f"Abstand()", 2)
     elif Value == 3:
-        Abstand()
-        Abstand()
-        Abstand()
-
+        rat_repeat(f"Abstand()", 3)
 def show_streamer():
     if Show_Streamermode is True:
         if STREAMER_MODE is True:
-            print(f"{main_color_theme}Streamer Modus: {Secondary_color_theme}Aktiv{end}") 
+            rat_print(f"{main_color_theme}Streamer Modus: {Secondary_color_theme}Aktiv{end}") 
     if Show_Streamermode is False:
         return 
 
 def version():
     if Show_Version is True:
-        print(f"{main_color_theme}RatSpread Version: {Secondary_color_theme}{Version}")
+        rat_print(f"{main_color_theme}RatSpread Version: {Secondary_color_theme}{Version}")
     if show_debug and DEBUG_MODE is True:
         space(1)
     else: 
@@ -249,8 +255,8 @@ def version():
 def weather():
     weather_info = get_weather()
     if weather_info:
-        print(weather_info)
-        print(" ")
+        rat_print(weather_info)
+        rat_print(" ")
 
 def format_value(text):
     try:
@@ -268,12 +274,12 @@ def debug(text):
 
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-        print(f"{blue}{current_time}{end} {debug_symbol} {main_color_theme}{formatted_text}{end}")
+        rat_print(f"{blue}{current_time}{end} {debug_symbol} {main_color_theme}{formatted_text}{end}")
         sleep(4)
 
 def error(message):
     global error
-    print(f"{bad}: {message}")
+    rat_print(f"{bad}: {message}")
     sleep(2)
 
 def debug_switch():
@@ -325,7 +331,7 @@ def check_script_executable(script_path):
         result = subprocess.run(["python", script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=5)
         return result.returncode == 0
     except Exception as e:
-        print(f"{bad} Fehler beim Ausführen des Skripts {script_path}: {e}")
+        rat_print(f"{bad} Fehler beim Ausführen des Skripts {script_path}: {e}")
         return False
 
 def get_weather():
@@ -431,7 +437,7 @@ def initialize_scripts():
         "Rat_create": rat_create_executable
     }
 
-def print_menu(script_status):
+def rat_print_menu(script_status):
 
 #==========================================    
     Start() #Start Anzeige, Ascii, etc
@@ -443,26 +449,26 @@ def print_menu(script_status):
         else:
             return f"{not_loadet}{Script_status_color_not_found} {name}"
     
-    print(mark_script('Stealer', script_status['start_stealer']))
-    print(mark_script('Nuker', script_status['Rat_nuker']))
-    print(mark_script('Crawler', script_status['Rat_crawler']))
-    print(mark_script('DeHasher', script_status['Rat_dehasher']))
-    print(mark_script('Crypter', script_status['Rat_crypter']))
-    print(mark_script('Encrypter', script_status['Rat_encrypter']))
-    print(mark_script('Setup', script_status['Rat_setup']))
-    print(mark_script('Phisher', script_status['Rat_phisher']))
-    print(mark_script('RatSave', script_status['Rat_save'])) 
-    print(mark_script('RatSave YT', script_status['Rat_save_yt'])) 
-    print(mark_script('RatCreate', script_status['Rat_create'])) 
-    print(" ")
+    rat_print(mark_script('Stealer', script_status['start_stealer']))
+    rat_print(mark_script('Nuker', script_status['Rat_nuker']))
+    rat_print(mark_script('Crawler', script_status['Rat_crawler']))
+    rat_print(mark_script('DeHasher', script_status['Rat_dehasher']))
+    rat_print(mark_script('Crypter', script_status['Rat_crypter']))
+    rat_print(mark_script('Encrypter', script_status['Rat_encrypter']))
+    rat_print(mark_script('Setup', script_status['Rat_setup']))
+    rat_print(mark_script('Phisher', script_status['Rat_phisher']))
+    rat_print(mark_script('RatSave', script_status['Rat_save'])) 
+    rat_print(mark_script('RatSave YT', script_status['Rat_save_yt'])) 
+    rat_print(mark_script('RatCreate', script_status['Rat_create'])) 
+    rat_print(" ")
 
     for key, value in menu_options.items():
-        print(f"{options_color}{key}: {value}")
+        rat_print(f"{options_color}{key}: {value}")
 
 def willkommen():
     global show_wellcome, Show_Welcomme
     if Show_Welcomme is True:
-        print(" ")
+        rat_print(" ")
         try:
             stunde = int(time.strftime("%H"))
         except ValueError:
@@ -488,10 +494,10 @@ def willkommen():
         if geburtstag and geburtstag == today_date:
             gruß = f"{main_color_theme}Herzlichen Glückwunsch zum Geburtstag, {Secondary_color_theme}{username}!"
         if STREAMER_MODE is True:
-            print(f"{main_color_theme}{gruß}, {Secondary_color_theme}Zensiert!{main_color_theme} Heute ist {Secondary_color_theme}{wochentag}{main_color_theme} der {green}{today_date}")
+            rat_print(f"{main_color_theme}{gruß}, {Secondary_color_theme}Zensiert!{main_color_theme} Heute ist {Secondary_color_theme}{wochentag}{main_color_theme} der {green}{today_date}")
         else:
-            print(f"{main_color_theme}{gruß}, {Secondary_color_theme}{username}{main_color_theme}! Heute ist {Secondary_color_theme}{wochentag}{main_color_theme} der {green}{today_date}")
-        print(f"{main_color_theme}Wir haben {Secondary_color_theme}{aktuelle_zeit}{main_color_theme} Uhr {grußend}")
+            rat_print(f"{main_color_theme}{gruß}, {Secondary_color_theme}{username}{main_color_theme}! Heute ist {Secondary_color_theme}{wochentag}{main_color_theme} der {green}{today_date}")
+        rat_print(f"{main_color_theme}Wir haben {Secondary_color_theme}{aktuelle_zeit}{main_color_theme} Uhr {grußend}")
     else:
         return
 
@@ -527,7 +533,7 @@ def RatStealer():
             error_menu(f"{bad} Fehler beim Ausführen des Stealer-Skripts: {e}")
     else:
         debug("Stealer-Skript nicht gefunden.")
-        print("start_stealer_win.bat konnte nicht gefunden werden.")
+        rat_print("start_stealer_win.bat konnte nicht gefunden werden.")
 
 def RatNuker():
     if Rat_nuker:
@@ -538,7 +544,7 @@ def RatNuker():
             error_menu(f"{bad} Fehler beim Ausführen des Nuker-Skripts: {e}")
     else:
         debug("Nuker-Skript nicht gefunden.")
-        print("RatSpreadSystemNuker.py konnte nicht gefunden werden.")
+        rat_print("RatSpreadSystemNuker.py konnte nicht gefunden werden.")
 
 def RatCrawler():
     if Rat_crawler:
@@ -549,7 +555,7 @@ def RatCrawler():
             error_menu(f"{bad} Fehler beim Ausführen des Crawler-Skripts: {e}")
     else:
         debug("Crawler-Skript nicht gefunden.")
-        print("RatCrawler.py konnte nicht gefunden werden.")
+        rat_print("RatCrawler.py konnte nicht gefunden werden.")
 
 def RatDehasher():
     if Rat_dehasher:
@@ -561,7 +567,7 @@ def RatDehasher():
             error_menu(f"{bad} Fehler beim Ausführen des DeHasher-Skripts: {e}")
     else:
         debug("DeHasher-Skript nicht gefunden.")
-        print("RatDeHasher.py konnte nicht gefunden werden.")
+        rat_print("RatDeHasher.py konnte nicht gefunden werden.")
 
 def verschluesselungs_menu():
     debug("Verschlüsselungsmenü aufgerufen")
@@ -573,9 +579,9 @@ def verschluesselungs_menu():
     }
 
     while True:
-        print("\nVerschlüsselungsmenü:")
+        rat_print("\nVerschlüsselungsmenü:")
         for key, value in verschluesselungs_menu_options.items():
-            print(f"{key}: {value}")
+            rat_print(f"{key}: {value}")
         
         try:
             if DARKMODE is False:
@@ -591,10 +597,10 @@ def verschluesselungs_menu():
                 break
             else:
                 debug(f"Ungültige Option im Verschlüsselungsmenü ausgewählt: {option}")
-                print('Ungültige Option. Bitte eine Zahl zwischen 1 und 3 eingeben.')
+                rat_print('Ungültige Option. Bitte eine Zahl zwischen 1 und 3 eingeben.')
         except ValueError:
             debug("Ungültige Eingabe im Verschlüsselungsmenü: keine Zahl")
-            print('Ungültige Eingabe. Bitte eine Zahl eingeben ...')
+            rat_print('Ungültige Eingabe. Bitte eine Zahl eingeben ...')
         except Exception as e:
             error_menu(str(e))
 
@@ -607,7 +613,7 @@ def RatCrypter():
             error_menu(f"{bad} Fehler beim Ausführen des Verschlüsselungs-Skripts: {e}")
     else:
         debug("Verschlüsselungs-Skript nicht gefunden.")
-        print("Ratcodierung.py konnte nicht gefunden werden.")
+        rat_print("Ratcodierung.py konnte nicht gefunden werden.")
 
 def RatEnCrypter():
     if Rat_encrypter:
@@ -618,7 +624,7 @@ def RatEnCrypter():
             error_menu(f"{bad} Fehler beim Ausführen des Entschlüsselungs-Skripts: {e}")
     else:
         debug("Entschlüsselungs-Skript nicht gefunden.")
-        print("Ratuncode.py konnte nicht gefunden werden.")
+        rat_print("Ratuncode.py konnte nicht gefunden werden.")
 
 def RatSetup():
     if Rat_setup:
@@ -629,7 +635,7 @@ def RatSetup():
             error_menu(f"{bad} Fehler beim Ausführen des Setup-Skripts: {e}")
     else:
         debug("Setup-Skript nicht gefunden.")
-        print("start_setup.py konnte nicht gefunden werden.")
+        rat_print("start_setup.py konnte nicht gefunden werden.")
 
 def RatPhisher():
     if Rat_phisher:
@@ -640,7 +646,7 @@ def RatPhisher():
             error_menu(f"{bad} Fehler beim Ausführen des Phisher-Skripts: {e}")
     else:
         debug("Phisher-Skript nicht gefunden.")
-        print("RatPhisher.py konnte nicht gefunden werden.")
+        rat_print("RatPhisher.py konnte nicht gefunden werden.")
 
 def RatSave_menu():
     debug("RatSave aufgerufen")
@@ -652,10 +658,10 @@ def RatSave_menu():
     }
     while True:
         clear()
-        print(f"{RatSpreadVars.RatSave_titel}")
-        print("\nRatSave Menu:")
+        rat_print(f"{RatSpreadVars.RatSave_titel}")
+        rat_print("\nRatSave Menu:")
         for key, value in RatSave_menu_options.items():
-            print(f"{key}: {value}")
+            rat_print(f"{key}: {value}")
         try:
             if DARKMODE is False:
                 option = int(input(f'{lightmode_input} '))
@@ -671,10 +677,10 @@ def RatSave_menu():
                 break
             else:
                 debug(f"Ungültige Option im Verschlüsselungsmenü ausgewählt: {option}")
-                print('Ungültige Option. Bitte eine Zahl zwischen 1 und 3 eingeben.')
+                rat_print('Ungültige Option. Bitte eine Zahl zwischen 1 und 3 eingeben.')
         except ValueError:
             debug("Ungültige Eingabe im Verschlüsselungsmenü: keine Zahl")
-            print('Ungültige Eingabe. Bitte eine Zahl eingeben ...')
+            rat_print('Ungültige Eingabe. Bitte eine Zahl eingeben ...')
         except Exception as e:
             error_menu(str(e))
 def RatSave():
@@ -686,7 +692,7 @@ def RatSave():
             error_menu(f"{bad} Fehler beim Ausführen des RatSave-Skripts: {e}")
     else:
         debug("RatSave-Skript nicht gefunden.")
-        print("RatSave.py konnte nicht gefunden werden.")
+        rat_print("RatSave.py konnte nicht gefunden werden.")
 
 def RatSave_yt():
     if Rat_save_yt:
@@ -697,7 +703,7 @@ def RatSave_yt():
             error_menu(f"{bad} Fehler beim Ausführen des RatSave-Skripts: {e}")
     else:
         debug("RatSave-Skript nicht gefunden.")
-        print("RatSave_yt.py konnte nicht gefunden werden.")
+        rat_print("RatSave_yt.py konnte nicht gefunden werden.")
 
 def RatCreate():
     if Rat_create:
@@ -708,7 +714,7 @@ def RatCreate():
             error_menu(f"{bad} Fehler beim Ausführen des RatCreate-Skripts: {e}")
     else:
         debug("RatCreate-Skript nicht gefunden.")
-        print("RatCreate.py konnte nicht gefunden werden.")
+        rat_print("RatCreate.py konnte nicht gefunden werden.")
 
 menu_options = {
     1: "Stealer starten",
@@ -746,10 +752,10 @@ def error_menu(error_message):
     clear()
     color()
     
-    print(f"Ein {bad} Fehler ist aufgetreten:")
-    print(f"{error_message}")
-    print("\nDetaillierter Fehlerbericht:")
-    print(error_report)
+    rat_print(f"Ein {bad} Fehler ist aufgetreten:")
+    rat_print(f"{error_message}")
+    rat_print("\nDetaillierter Fehlerbericht:")
+    rat_print(error_report)
     
     input("Drücke Enter, um fortzufahren...")
     
@@ -766,7 +772,7 @@ def change_color(option):
         except Exception as e:
             debug(f"{bad} Fehler beim Ändern der Farbe: {e}")
     else:
-        print("Farbänderung wird nur unter Windows unterstützt.")
+        rat_print("Farbänderung wird nur unter Windows unterstützt.")
 
 def random_color():
     if DARKMODE is True:
@@ -786,7 +792,7 @@ def disco():
         except Exception as e:
             error_menu(f"{bad} Fehler: {e}")
     else:
-        print("Der Disco modus wird nur unter Windows unterstützt.")
+        rat_print("Der Disco modus wird nur unter Windows unterstützt.")
 
 def start_disco():
     global disco_running
@@ -798,7 +804,7 @@ def stop_disco():
     disco_running = False
         
 def Reload():
-    print(f"{main_color_theme}RatSpread wird Neugeladen")
+    rat_print(f"{main_color_theme}RatSpread wird Neugeladen")
     debug("Programm wird neu geladen")
     os.system("call RatMenu.py")
     sys.exit(0)
@@ -807,7 +813,7 @@ def wko():
     global wko
     force_clear()
     start_disco()
-    print("test")
+    rat_print("test")
     sleep(1)
     debug("test")
     wko()
@@ -824,22 +830,27 @@ def start_script(script_name):
             elif file_extension == '.sh':
                 subprocess.run(['bash', script_name], shell=True)  
             else:
-                print(f"Unbekanntes Dateiformat: {file_extension}")
+                rat_print(f"Unbekanntes Dateiformat: {file_extension}")
         except Exception as e:
-            print(f"Fehler beim Ausführen des Skripts: {e}")
+            rat_print(f"Fehler beim Ausführen des Skripts: {e}")
     else:
-        print(f"Skript '{script_name}' nicht gefunden.")
+        rat_print(f"Skript '{script_name}' nicht gefunden.")
+
+def test():
+    from RatSpreadVars import rat_repeat
+    rat_repeat(f"rat_print('testing.'), sleep(5), rat_print('testing..'), rat_print('testing...')",  5)
+    debug("testing")
 
 def main_menu():
     script_status = initialize_scripts()
     while True:
         try:
             if DARKMODE is True:
-                print_menu(script_status)
+                rat_print_menu(script_status)
                 option = input(f'{Secondary_color_theme}{normal_input}').lower()
-                print(f"{end}")
+                rat_print(f"{end}")
             else:
-                print_menu(script_status)
+                rat_print_menu(script_status)
                 option = input(f'{lightmode_input}').lower()
 
             if option == "disco start":
@@ -870,12 +881,20 @@ def main_menu():
             if option == "wko":
                 wko()
                 continue
-            
+
+            if option == "test":
+                test()
+                continue
+
+            if option in ["debug", "debug on", "debug true", "debug off", "debug false"]:
+                debug_switch()
+                continue
+
             try:
                 option = int(option)
             except ValueError:
                 debug(f'"{option}" ist keine gültige Eingabe')
-                print(f'{main_color_theme}Ungültige Eingabe. Bitte eine Zahl eingeben ...')
+                rat_print(f'{main_color_theme}Ungültige Eingabe. Bitte eine Zahl eingeben ...')
                 continue
 
             if option == 1:
@@ -899,7 +918,7 @@ def main_menu():
             elif option == 10:
                 stop_disco()
                 debug("Programm wird beendet")
-                print(f'{main_color_theme}RatSpread wird beendet')
+                rat_print(f'{main_color_theme}RatSpread wird beendet')
                 sys.exit(0)
             elif option == 99:
                 debug_switch()
@@ -913,11 +932,11 @@ def main_menu():
                 lightmode_switch()
             else:
                 debug(f"Ungültige Option ausgewählt: {option}")
-                print(f'{main_color_theme}Ungültige Option. Bitte eine Zahl zwischen 1 und 10 eingeben.')
+                rat_print(f'{main_color_theme}Ungültige Option. Bitte eine Zahl zwischen 1 und 10 eingeben.')
         except KeyboardInterrupt:
             if DEBUG_MODE is True:
                 stop_disco()
-                print(" ")
+                rat_print(" ")
                 debug("Strg+C im Hauptmenü gedrückt, Script wird beendet")
                 sys.exit(0)
             else:
@@ -928,4 +947,4 @@ def main_menu():
 
 if __name__ == "__main__":
     disco_running = False
-    main_menu()
+    main_menu
