@@ -1,5 +1,5 @@
 import time
-from RatMenu import Version
+from RatMenu import *
 
 end = '\033[0m'
 red = '\033[91m'
@@ -269,29 +269,28 @@ good = '\033[92m[🗸]\033[0m'
 not_loadet = '\033[91m[✗]\033[0m'
 loadet = '\033[92m[🗸]\033[0m'
 
-RatSpreadVarsVersion = "0.0.5"
+RatSpreadVarsVersion = "0.0.6"
 
-print(f"{RatPhisher_titel}")
-time.sleep(0.05) 
-print(f"{RatCoder_titel}")
-time.sleep(0.05) 
-print(f"{RatCrypter_titel}")
-time.sleep(0.05) 
-print(f"{Ratdecoder_titel}")
-time.sleep(0.05) 
-print(f"{RatSave_titel}")
-time.sleep(0.05) 
-print(f"{RatCoder_titel}")
-time.sleep(0.05) 
-print(f"{RatStealer_titel}")
-time.sleep(0.05) 
-print(f"{titel}")
-time.sleep(0.05) 
-print(f"{ascii}")
-time.sleep(0.05) 
-print(f"{white}Running RatSpreadVars {yellow}{RatSpreadVarsVersion}")
-time.sleep(1)
-print(f"{white}Starting RatMenu {yellow}{Version}{end}")
-time.sleep(1)
+rat_print(f"{main_color_theme}{RatPhisher_titel}")
+sleep(0.05) 
+rat_print(f"{main_color_theme}{RatCoder_titel}")
+sleep(0.05) 
+rat_print(f"{main_color_theme}{RatCrypter_titel}")
+sleep(0.05) 
+rat_print(f"{main_color_theme}{Ratdecoder_titel}")
+sleep(0.05) 
+rat_print(f"{main_color_theme}{RatSave_titel}")
+sleep(0.05) 
+rat_print(f"{main_color_theme}{RatCoder_titel}")
+sleep(0.05) 
+rat_print(f"{main_color_theme}{RatStealer_titel}")
+sleep(0.05) 
+rat_print(f"{main_color_theme}{titel}")
+sleep(0.05) 
+rat_print(f"{main_color_theme}{ascii}")
+sleep(0.05) 
+rat_print(f"{main_color_theme}Running RatSpreadVars Version: {Secondary_color_theme}{RatSpreadVarsVersion}{end}")
+sleep(1)
+rat_print(f"{main_color_theme}Starting RatMenu Version: {Secondary_color_theme}{Version}{end}")
 
 # By Mausi Schmausi
