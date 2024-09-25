@@ -7,62 +7,17 @@ from datetime import datetime
 import sys
 import locale
 import platform
-import requests
 import importlib
-import threading
 import random
-
-Version = "0.1.5"
-
-Placeholder = r""" 
-______      _   _____                          _      
-| ___ \    | | /  ___|                        | |     
-| |_/ /__ _| |_\ `--. _ __  _ __ ___  __ _  __| |     
-|    // _` | __|`--. \ '_ \| '__/ _ \/ _` |/ _` |     
-| |\ \ (_| | |_/\__/ / |_) | | |  __/ (_| | (_| |     
-\_| \_\__,_|\__\____/| .__/|_|  \___|\__,_|\__,_|     
-                     | |                              
-                     |_|                              
-______ _                _           _     _           
-| ___ \ |              | |         | |   | |          
-| |_/ / | __ _  ___ ___| |__   ___ | | __| | ___ _ __ 
-|  __/| |/ _` |/ __/ _ \ '_ \ / _ \| |/ _` |/ _ \ '__|
-| |   | | (_| | (_|  __/ | | | (_) | | (_| |  __/ |   
-\_|   |_|\__,_|\___\___|_| |_|\___/|_|\__,_|\___|_|"""
-try:
-    import RatSpreadVars
-except ImportError:
-    print("RatSpreadVars konnte nicht importiert werden. Verwende Platzhalter.")
-    time.sleep(2)
-    class RatSpreadVars:
-        ascii = f"{Placeholder}"
-        titel = "=== RatSpread Menu ==="
-        RatSave_titel = f"{Placeholder}"
-try:
-    import Settings
-    username = getattr(Settings, 'username', 'DefaultUser')
-    city = getattr(Settings, 'city', 'DefaultCity')
-    birthday = getattr(Settings, 'birthday', '01.01.1900')
-    api_key = getattr(Settings, 'api_key', '41f0e608343eaec9c51769c4b41c019a')
-except ImportError:
-    print("Settings konnte nicht importiert werden. Verwende Platzhalter.")
-    time.sleep(2)
-    class Settings:
-        username = 'DefaultUser'
-        city = 'Salzburg'
-        birthday = '01.01.1900'
-        api_key = '41f0e608343eaec9c51769c4b41c019a'
-    username = Settings.username
-    city = Settings.city
-    birthday = Settings.birthday
-    api_key = Settings.api_key
 
 #-------------------
 #True = An
 #False = Aus 
 #-------------------
 
-DEBUG_MODE = False #Eingabe: 99
+Version = "0.1.6"
+
+DEBUG_MODE = True #Eingabe: 99
 STREAMER_MODE = False #Eingabe: 100
 DARKMODE = True #Bitte... bei allem was heilig ist.... lass den Darkmode an
 Show_Ascii = True #Eingabe: 200
@@ -109,7 +64,7 @@ if  DARKMODE is True:
     bad = '\033[91m[!]\033[0m'
     info = '\033[93m[i]\033[0m'
     debug_symbol = '\033[92m[</>]\033[0m'
-    good = f'{green}[🗸]{white}'
+    good = '\033[92m[🗸]\033[0m'
     not_loadet = '\033[91m[✗]\033[0m'
     loadet = '\033[92m[🗸]\033[0m'
 else: 
@@ -144,7 +99,6 @@ normal_input = f"{main_color_theme}Bitte wähle eine Option: {Secondary_color_th
 
 lightmode_input = f"You sick Bastard: "
 
-
 def Start():
     if Light_mode is True:
         force_clear()
@@ -169,6 +123,9 @@ def Start():
         willkommen()
         weather()
 
+def rat_pause():
+    os.system("pause")
+
 def rat_repeat(command_list, times):
     commands = command_list.split(", ")
     
@@ -178,6 +135,14 @@ def rat_repeat(command_list, times):
 
 def rat_print(message):
     print(f"{message}")
+
+def rat_print_wait(message, time):
+    rat_print(f"{message}")
+    sleep(time)
+
+def rat_print_pause(message):
+    rat_print(f"{message}")
+    rat_pause()
 
 def clear():
     if not DEBUG_MODE:
@@ -238,6 +203,7 @@ def space(Value):
         rat_repeat(f"Abstand()", 2)
     elif Value == 3:
         rat_repeat(f"Abstand()", 3)
+
 def show_streamer():
     if Show_Streamermode is True:
         if STREAMER_MODE is True:
@@ -277,6 +243,97 @@ def debug(text):
     
         rat_print(f"{blue}{current_time}{end} {debug_symbol} {main_color_theme}{formatted_text}{end}")
         sleep(4)
+
+Placeholder = r""" 
+______      _   _____                          _      
+| ___ \    | | /  ___|                        | |     
+| |_/ /__ _| |_\ `--. _ __  _ __ ___  __ _  __| |     
+|    // _` | __|`--. \ '_ \| '__/ _ \/ _` |/ _` |     
+| |\ \ (_| | |_/\__/ / |_) | | |  __/ (_| | (_| |     
+\_| \_\__,_|\__\____/| .__/|_|  \___|\__,_|\__,_|     
+                     | |                              
+                     |_|                              
+______ _                _           _     _           
+| ___ \ |              | |         | |   | |          
+| |_/ / | __ _  ___ ___| |__   ___ | | __| | ___ _ __ 
+|  __/| |/ _` |/ __/ _ \ '_ \ / _ \| |/ _` |/ _ \ '__|
+| |   | | (_| | (_|  __/ | | | (_) | | (_| |  __/ |   
+\_|   |_|\__,_|\___\___|_| |_|\___/|_|\__,_|\___|_|"""
+
+try:
+    import RatSpreadVars
+except ImportError:
+    debug("RatSpreadVars konnte nicht importiert werden. Verwende Platzhalter.")
+    time.sleep(2)
+    class RatSpreadVars:
+        ascii = f"{Placeholder}"
+        titel = "=== RatSpread Menu ==="
+        RatSave_titel = f"{Placeholder}"
+
+try:
+    import Settings
+    username = getattr(Settings, 'username', 'DefaultUser')
+    city = getattr(Settings, 'city', 'DefaultCity')
+    birthday = getattr(Settings, 'birthday', '01.01.1900')
+    api_key = getattr(Settings, 'api_key', '41f0e608343eaec9c51769c4b41c019a')
+except ImportError:
+    debug("Settings konnte nicht importiert werden. Verwende Platzhalter.")
+    time.sleep(2)
+    class Settings:
+        username = 'DefaultUser'
+        city = 'Salzburg'
+        birthday = '01.01.1900'
+        api_key = '41f0e608343eaec9c51769c4b41c019a'
+    username = Settings.username
+    city = Settings.city
+    birthday = Settings.birthday
+    api_key = Settings.api_key
+
+required_packages = [
+    "requests",
+    "whois",
+    "six",
+    "dateutil",
+    "importlib"
+]
+
+def install_packages_if_needed(packages):
+    for package in packages:
+        try:
+            importlib.import_module(package)
+            debug(f"[DEBUG] {package} ist installiert.")
+        except ImportError:
+            debug(f"[DEBUG] {package} wird nicht gefunden und wird jetzt installiert...")
+            try:
+                subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+                debug(f"[DEBUG] {package} wurde erfolgreich installiert.")
+            except subprocess.CalledProcessError as e:
+                debug(f"[ERROR] Installation von {package} fehlgeschlagen: {e}")
+
+def upgrade_six_if_needed():
+    try:
+        six_version = importlib.import_module('six').__version__
+        debug(f"[DEBUG] Gefundene 'six' Version: {six_version}")
+        if six_version < "1.15.0": 
+            debug("[DEBUG] Upgrade von 'six' wird durchgeführt...")
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "six"])
+            debug("[DEBUG] 'six' wurde erfolgreich auf die neueste Version aktualisiert.")
+    except ImportError:
+        debug("[DEBUG] 'six' ist nicht installiert. Installation wird durchgeführt...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "six"])
+
+install_packages_if_needed(required_packages)
+upgrade_six_if_needed()
+
+try:
+    import requests
+    import whois
+    import six
+    import dateutil
+    import importlib
+except ImportError as e:
+    print(f"[ERROR] Ein Fehler ist beim Importieren der Pakete aufgetreten: {e}")
+
 
 def error(message):
     global error
@@ -375,7 +432,7 @@ def get_weather():
                 temp_info += f"\n{main_color_theme}Die Temperatur wird voraussichtlich {green}{threshold_temp}{main_color_theme}°C überschreiten am {dgreen}{exceed_time.strftime(f'%d.%m.%Y {main_color_theme}um {Secondary_color_theme}%H:%M')}{main_color_theme}.{end}"
             else:
                 temp_info += f"\n{main_color_theme}Die Temperatur wird in den nächsten 5 Tagen voraussichtlich nicht {green}{threshold_temp}{main_color_theme}°C überschreiten."
-        
+
         return temp_info
     else:
         return f"{bad} Fehler: Keine Vorhersagedaten gefunden."
@@ -449,7 +506,7 @@ def rat_print_menu(script_status):
             return f"{loadet}{Script_status_color_found}{name}"
         else:
             return f"{not_loadet}{Script_status_color_not_found} {name}"
-    
+
     rat_print(mark_script('Stealer', script_status['start_stealer']))
     rat_print(mark_script('Nuker', script_status['Rat_nuker']))
     rat_print(mark_script('Crawler', script_status['Rat_crawler']))
@@ -583,7 +640,7 @@ def verschluesselungs_menu():
         rat_print("\nVerschlüsselungsmenü:")
         for key, value in verschluesselungs_menu_options.items():
             rat_print(f"{key}: {value}")
-        
+
         try:
             if DARKMODE is False:
                 option = int(input(f'{lightmode_input}'))
@@ -735,10 +792,10 @@ def error_menu(error_message):
     import sys
     import datetime
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
+
     exc_type, exc_value, exc_traceback = sys.exc_info()
     traceback_details = ''.join(traceback.format_tb(exc_traceback))
-    
+
     error_report = f"""
     Fehlerbericht:
     Zeit: {timestamp}
@@ -747,30 +804,30 @@ def error_menu(error_message):
     Traceback:
     {traceback_details}
     """
-    
+
     debug(f"{bad} Fehler aufgetreten: {error_message}")
     
     clear()
     color()
-    
+
     rat_print(f"Ein {bad} Fehler ist aufgetreten:")
     rat_print(f"{error_message}")
     rat_print("\nDetaillierter Fehlerbericht:")
     rat_print(error_report)
-    
+
     input("Drücke Enter, um fortzufahren...")
-    
+
     with open("error_log.txt", "a") as log_file:
         log_file.write(error_report)
 
 def loading_screen(stop_event):
     while not stop_event.is_set():
         for char in "|/-\\":
-            print(f"{main_color_theme}Überprüfe Verfügbarkeit... {char}", end="\r")
+            rat_print(f"{main_color_theme}Überprüfe Verfügbarkeit... {char}", end="\r")
             time.sleep(0.2)
 
 def check_domain_availability(domain):
-    print(f"{main_color_theme}Überprüfe die Verfügbarkeit der Domain: {Secondary_color_theme}{domain}")
+    rat_print(f"{main_color_theme}Überprüfe die Verfügbarkeit der Domain: {Secondary_color_theme}{domain}")
     stop_event = threading.Event()
     loading_thread = threading.Thread(target=loading_screen, args=(stop_event,))
     loading_thread.start()
@@ -785,6 +842,30 @@ def check_domain_availability(domain):
         sleep(5)
     else:
         rat_print(f"{green}[Kaufbar]{main_color_theme} Die Domain {Secondary_color_theme}{domain}{main_color_theme} ist nicht erreichbar {Secondary_color_theme}(warscheinlich kaufbar){main_color_theme}.")
+        sleep(5)
+
+def loading_screen_ping(stop_event):
+    while not stop_event.is_set():
+        for char in "|/-\\":
+            rat_print(f"{main_color_theme}Pinge {Secondary_color_theme}{IP}{main_color_theme} {char}{end}", end="\r")
+            time.sleep(0.2)
+
+def pingdomain(IP):
+    rat_print(f"{main_color_theme}Pingen der IP-Adresse: {Secondary_color_theme}{IP}{main_color_theme}...{end}")
+    stop_event = threading.Event()
+    loading_thread = threading.Thread(target=loading_screen_ping, args=(stop_event,))
+    loading_thread.start()
+
+    response = os.system(f"ping {IP} > nul")
+
+    stop_event.set()
+    loading_thread.join()
+
+    if response == 0:
+        rat_print(f"{green}[Erreichbar]{main_color_theme} Die IP-Adresse {Secondary_color_theme}{IP}{main_color_theme} ist erreichbar.{end}")
+        sleep(5)
+    else:
+        rat_print(f"{red}[Nicht Erreichbar]{main_color_theme} Die IP-Adresse {Secondary_color_theme}{IP}{main_color_theme} ist nicht erreichbar.{end}")
         sleep(5)
 
 def change_color(option):
@@ -837,7 +918,7 @@ def start_disco():
 def stop_disco():
     global disco_running
     disco_running = False
-        
+
 def Reload():
     rat_print(f"{main_color_theme}RatSpread wird Neugeladen")
     debug("Programm wird neu geladen")
@@ -919,8 +1000,8 @@ def info():
 
     {Secondary_color_theme}10. Rat-Funktionen (Optionen 1-9):{end}
         - **RatStealer** (Option 1): Diese Funktion stiehlt Informationen und sendet diese an einen FTP-Server.
-        - **RatNuker** (Option 2): Führt zerstörerische Aktionen aus, wie das Löschen von Daten.
-        - **RatCrawler** (Option 3): Sammelt Informationen oder durchsucht das Zielsystem nach Daten.
+        - **RatNuker** (Option 2): ****************************************************************
+        - **RatCrawler** (Option 3): **************************************************************
         - **RatDehasher** (Option 4): Knackt Hashes, um Passwörter oder andere verschlüsselte Daten wiederherzustellen.
         - **Verschlüsselungsmenü** (Option 5): Öffnet ein Menü, in dem verschiedene Verschlüsselungsmethoden verwendet werden können.
         - **RatSetup** (Option 6): Führt eine Setup-Routine zum Einrichten des Zielsystems durch.
@@ -951,8 +1032,30 @@ def info():
     {end}
     """
 
-    print(menu)
-    os.system("pause")
+    rat_print(menu)
+    rat_pause()
+
+import whois
+
+def whois_lookup(domain):
+    try:
+        domain_info = whois.whois(domain)
+
+        rat_print(f"{main_color_theme}------------------- WHOIS Informationen für {Secondary_color_theme}{domain}{main_color_theme} -------------------")
+        rat_print(f"{main_color_theme}Domain Name: {Secondary_color_theme}{domain_info.domain_name}")
+        rat_print(f"{main_color_theme}Registrar: {Secondary_color_theme}{domain_info.registrar}")
+        rat_print(f"{main_color_theme}Whois Server: {Secondary_color_theme}{domain_info.whois_server}")
+        rat_print(f"{main_color_theme}Creation Date: {Secondary_color_theme}{domain_info.creation_date}")
+        rat_print(f"{main_color_theme}Expiration Date: {Secondary_color_theme}{domain_info.expiration_date}")
+        rat_print(f"{main_color_theme}Name Servers: {Secondary_color_theme}{domain_info.name_servers}")
+        rat_print(f"{main_color_theme}Status: {Secondary_color_theme}{domain_info.status}")
+        rat_print(f"{main_color_theme}Emails: {Secondary_color_theme}{domain_info.emails}")
+        rat_print_pause(f"{main_color_theme}------------------- Ende der WHOIS Informationen -------------------")
+
+    except Exception as e:
+        rat_print(f"Fehler: Konnte WHOIS-Informationen für {domain} nicht abrufen.")
+        rat_print_wait(f"Grund: {str(e)}", 10)
+
 
 def main_menu():
     script_status = initialize_scripts()
@@ -973,7 +1076,7 @@ def main_menu():
             if option in ["help", "?"]:
                 info()
                 continue
-            
+
             if option.startswith("color "):
                 change_color(option)
                 continue
@@ -1003,20 +1106,45 @@ def main_menu():
                 test()
                 continue
 
+            if option.startswith("whois "):
+                domain = option[6:].strip()
+                if domain:
+                    whois_lookup(domain)
+                else:
+                    rat_print("Keine gültige Domain eingegeben.")
+                continue
+
             if option.startswith("domain "):
                 domain = option[7:].strip()
                 if domain:
                     check_domain_availability(domain)
                 else:
-                    print("Keine gültige Domain eingegeben.")
+                    rat_print("Keine gültige Domain eingegeben.")
                 continue
 
-            if option.startswith("ping "):
-                domain = option[5:].strip()
+            if option.startswith("domaincheck "):
+                domain = option[12:].strip()
                 if domain:
                     check_domain_availability(domain)
                 else:
-                    print("Keine gültige Domain eingegeben.")
+                    rat_print("Keine gültige Domain eingegeben.")
+                continue
+
+            if option.startswith("domain_check "):
+                domain = option[13:].strip()
+                if domain:
+                    check_domain_availability(domain)
+                else:
+                    rat_print("Keine gültige Domain eingegeben.")
+                continue
+
+            if option.startswith("ping "):
+                global IP
+                IP = option[5:].strip()
+                if IP:
+                    pingdomain(IP)
+                else:
+                    rat_print("Keine gültige Domain eingegeben.")
                 continue
 
             if option in ["debug", "debug on", "debug true", "debug off", "debug false"]:
@@ -1081,4 +1209,3 @@ def main_menu():
 if __name__ == "__main__":
     disco_running = False
     main_menu()
-#By Mausi Schmausi
