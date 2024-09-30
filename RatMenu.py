@@ -15,14 +15,14 @@ import random
 #False = Aus 
 #-------------------
 
-Version = "0.1.6"
+Version = "0.1.7"
 
-DEBUG_MODE = True #Eingabe: 99
+DEBUG_MODE = False #Eingabe: 99
 STREAMER_MODE = False #Eingabe: 100
 DARKMODE = True #Bitte... bei allem was heilig ist.... lass den Darkmode an
 Show_Ascii = True #Eingabe: 200
 Show_Welcomme = True #Eingabe: 250
-Light_mode = False #Eingabe: 300 # mitr light ist Leicht gemeint
+Light_mode = False #Eingabe: 300 mit light ist Leicht gemeint
 DoNotChangeColor = True
 SCRIPT_CHECK_ENABLED = False
 
@@ -87,7 +87,7 @@ else:
 
 main_color_theme = f"{white}"
 
-Secondary_color_theme = f"{yellow}"
+Secondary_color_theme = f"{yellow}"                                                                                                                                                                                                                                                                                                                     
 
 Script_status_color_found = f"{white}"
 
@@ -122,7 +122,7 @@ def Start():
         show_streamer()
         willkommen()
         weather()
-
+    
 def rat_pause():
     os.system("pause")
 
@@ -134,7 +134,7 @@ def rat_repeat(command_list, times):
             eval(command)
 
 def rat_print(message):
-    print(f"{message}")
+    print(f"{main_color_theme}{message}")
 
 def rat_print_wait(message, time):
     rat_print(f"{message}")
@@ -276,6 +276,18 @@ try:
     city = getattr(Settings, 'city', 'DefaultCity')
     birthday = getattr(Settings, 'birthday', '01.01.1900')
     api_key = getattr(Settings, 'api_key', '41f0e608343eaec9c51769c4b41c019a')
+    shortcuts = getattr(Settings, 'shortcuts', {
+        1: "https://www.google.at",
+        2: "https://www.github.com",
+        3: "test.txt", 
+        4: "https://www.stackoverflow.com",
+        5: "https://www.python.org",
+        6: "/path/to/anotherfile.txt",  
+        7: "https://www.wikipedia.org",
+        8: "https://www.bing.com",
+        9: "https://www.example.com",
+        10: "https://www.reddit.com"
+    })
 except ImportError:
     debug("Settings konnte nicht importiert werden. Verwende Platzhalter.")
     time.sleep(2)
@@ -284,42 +296,60 @@ except ImportError:
         city = 'Salzburg'
         birthday = '01.01.1900'
         api_key = '41f0e608343eaec9c51769c4b41c019a'
+        shortcuts = {
+            1: "https://www.google.at",
+            2: "https://www.github.com",
+            3: "test.txt", 
+            4: "https://www.stackoverflow.com",
+            5: "https://www.python.org",
+            6: "/path/to/anotherfile.txt",  
+            7: "https://www.wikipedia.org",
+            8: "https://www.bing.com",
+            9: "https://www.example.com",
+            10: "https://www.reddit.com"
+        }
+    
     username = Settings.username
     city = Settings.city
     birthday = Settings.birthday
     api_key = Settings.api_key
+    shortcuts = Settings.shortcuts
 
 required_packages = [
     "requests",
     "whois",
     "six",
     "dateutil",
-    "importlib"
+    "importlib",
+    "threading",
+    "webbrowser",
+    "platform",
+    "shutil"
 ]
 
 def install_packages_if_needed(packages):
     for package in packages:
         try:
             importlib.import_module(package)
-            debug(f"[DEBUG] {package} ist installiert.")
+            debug(f" {package} ist installiert.")
         except ImportError:
-            debug(f"[DEBUG] {package} wird nicht gefunden und wird jetzt installiert...")
+            debug(f" {package} wird nicht gefunden und wird jetzt installiert...")
             try:
                 subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-                debug(f"[DEBUG] {package} wurde erfolgreich installiert.")
+                debug(f" {package} wurde erfolgreich installiert.")
             except subprocess.CalledProcessError as e:
                 debug(f"[ERROR] Installation von {package} fehlgeschlagen: {e}")
 
 def upgrade_six_if_needed():
     try:
         six_version = importlib.import_module('six').__version__
-        debug(f"[DEBUG] Gefundene 'six' Version: {six_version}")
+        debug(f" Gefundene 'six' Version: {six_version}")
         if six_version < "1.15.0": 
-            debug("[DEBUG] Upgrade von 'six' wird durchgeführt...")
+            debug(" Upgrade von 'six' wird durchgeführt...")
             subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "six"])
-            debug("[DEBUG] 'six' wurde erfolgreich auf die neueste Version aktualisiert.")
+            debug(" 'six' wurde erfolgreich auf die neueste Version aktualisiert.")
     except ImportError:
-        debug("[DEBUG] 'six' ist nicht installiert. Installation wird durchgeführt...")
+        debug(" 'six' ist nicht installiert. Installation wird durchgeführt...")
         subprocess.check_call([sys.executable, "-m", "pip", "install", "six"])
 
 install_packages_if_needed(required_packages)
@@ -331,10 +361,15 @@ try:
     import six
     import dateutil
     import importlib
+    import threading
+    import os
+    import webbrowser
+    import platform
+    import shutil
 except ImportError as e:
     print(f"[ERROR] Ein Fehler ist beim Importieren der Pakete aufgetreten: {e}")
 
-
+import threading
 def error(message):
     global error
     rat_print(f"{bad}: {message}")
@@ -354,7 +389,7 @@ def streamer_Switch():
         if STREAMER_MODE is True:
             debug("Streamer modus deaktiviert")
             STREAMER_MODE = False
-        elif STREAMER_MODE is False:                        
+        elif STREAMER_MODE is False:
             debug("Streamer modus aktiviert")
             STREAMER_MODE = True 
 
@@ -823,7 +858,7 @@ def error_menu(error_message):
 def loading_screen(stop_event):
     while not stop_event.is_set():
         for char in "|/-\\":
-            rat_print(f"{main_color_theme}Überprüfe Verfügbarkeit... {char}", end="\r")
+            print(f"{main_color_theme}Überprüfe Verfügbarkeit... {char}", end="\r")
             time.sleep(0.2)
 
 def check_domain_availability(domain):
@@ -867,6 +902,74 @@ def pingdomain(IP):
     else:
         rat_print(f"{red}[Nicht Erreichbar]{main_color_theme} Die IP-Adresse {Secondary_color_theme}{IP}{main_color_theme} ist nicht erreichbar.{end}")
         sleep(5)
+
+def is_firefox_installed():
+    if platform.system() == 'Windows':
+        return shutil.which("firefox") is not None
+    elif platform.system() == 'Darwin':  # macOS
+        return os.path.exists("/Applications/Firefox.app")
+    else:  # Linux
+        return shutil.which("firefox") is not None
+
+def open_with_firefox(url):
+    try:
+        if platform.system() == 'Windows' or platform.system() == 'Linux':
+            subprocess.Popen(['firefox', url])
+        elif platform.system() == 'Darwin':  # macOS
+            subprocess.Popen(['/Applications/Firefox.app/Contents/MacOS/firefox', url])
+    except Exception as e:
+        debug(f"Fehler beim Öffnen mit Firefox: {Secondary_color_theme}{e}")
+
+def open_shortcut(number_str):
+    try:
+        number = int(number_str[1:])  
+        if number in shortcuts:
+            resource = shortcuts[number]
+            rat_print(f"{main_color_theme}Öffne Shortcut #{number}: {Secondary_color_theme}{resource}")
+            show_me(resource)
+        else:
+            rat_print(f"{bad} {main_color_theme}Kein Shortcut für #{number} gesetzt.")
+    except ValueError:
+        rat_print(f"{bad} {main_color_theme}Ungültiger Shortcut: {number_str}")
+
+def show_shortcuts():
+    rat_print(f"{main_color_theme}Verfügbare Shortcuts:")
+    for number, resource in shortcuts.items():
+        rat_print(f"{Secondary_color_theme}#{number}: {main_color_theme}{resource}")
+    rat_pause()
+
+def show_me(resource):
+    url_suffixes = ('.com', '.net', '.de', '.at', '.eu')
+
+    if resource.endswith(url_suffixes) or resource.startswith(('http://', 'https://', 'www.')):
+        if not resource.startswith(('http://', 'https://')):
+            resource = 'http://' + resource
+
+        debug(f"Öffne die Website: {Secondary_color_theme}{resource}")
+        rat_print(f"{main_color_theme}Öffne die Website: {Secondary_color_theme}{resource}")
+
+        if is_firefox_installed():
+            debug("Firefox erkannt. Öffne URL in Firefox.")
+            open_with_firefox(resource)
+        else:
+            debug("Kein Firefox erkannt. Öffne URL im Standard-Browser.")
+            webbrowser.open(resource)
+    
+    elif os.path.isfile(resource):
+        rat_print(f"{main_color_theme}Öffne die Datei: {Secondary_color_theme}{resource}")
+        try:
+            if platform.system() == 'Windows':
+                os.startfile(resource)  # Windows
+            elif platform.system() == 'Darwin':
+                subprocess.call(('open', resource))  # macOS
+            else:
+                subprocess.call(('xdg-open', resource))  # Linux
+        except Exception as e:
+            rat_print_wait(f"{main_color_theme} Fehler beim Öffnen der Datei: {e}", 5)
+    
+    else:
+        rat_print_pause(f"{bad} {main_color_theme}'{Secondary_color_theme}{resource}{main_color_theme}' ist weder eine gültige {Secondary_color_theme}URL {main_color_theme}noch eine vorhandene {Secondary_color_theme}Datei{main_color_theme}.")
+    main_menu()
 
 def change_color(option):
     global change_color, main_color_theme
@@ -946,11 +1049,14 @@ def start_script(script_name):
             elif file_extension == '.sh':
                 subprocess.run(['bash', script_name], shell=True)  
             else:
-                rat_print(f"Unbekanntes Dateiformat: {file_extension}")
+                rat_print_wait(f"{main_color_theme}Unbekanntes Dateiformat: {yellow}{file_extension}", 5)
+                main_menu()
         except Exception as e:
-            rat_print(f"Fehler beim Ausführen des Skripts: {e}")
+            rat_print_pause(f"Fehler beim Ausführen des Skripts: {e}")
+            main_menu()
     else:
-        rat_print(f"Skript '{script_name}' nicht gefunden.")
+        rat_print_wait(f"{main_color_theme}Skript '{Secondary_color_theme}{script_name}{main_color_theme}' nicht gefunden.", 5)
+        main_menu()
 
 def test():
     from RatSpreadVars import rat_repeat
@@ -1029,11 +1135,9 @@ def info():
        {main_color_theme}Beschreibung:{end} Schaltet den Lightmode an, dieser zeigt ein minimalistisches Overlay an
        {main_color_theme}Aufruf:{end} '300'
     {main_color_theme}----------------------------------------------------------------------
-    {end}
-    """
+    {end}"""
 
-    rat_print(menu)
-    rat_pause()
+    rat_print_pause(menu)
 
 import whois
 
@@ -1055,7 +1159,6 @@ def whois_lookup(domain):
     except Exception as e:
         rat_print(f"Fehler: Konnte WHOIS-Informationen für {domain} nicht abrufen.")
         rat_print_wait(f"Grund: {str(e)}", 10)
-
 
 def main_menu():
     script_status = initialize_scripts()
@@ -1085,6 +1188,28 @@ def main_menu():
                 script_name = option[6:].strip() 
                 start_script(script_name)
                 sys.exit(0) 
+
+            if option.startswith("show me "):
+                script_name = option[8:].strip() 
+                show_me(script_name)
+                sys.exit(0)
+
+            if option.startswith("#"):
+                if option == "#?":
+                    show_shortcuts()
+                else:
+                    open_shortcut(option)
+                continue
+
+            if option.startswith("show me "):
+                script_name = option[8:].strip() 
+                show_me(script_name)
+                continue
+
+            if option.startswith("showme "):
+                script_name = option[7:].strip() 
+                show_me(script_name)
+                sys.exit(0)
 
             if option == "disco stop":
                 stop_disco()
