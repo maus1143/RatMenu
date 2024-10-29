@@ -1,22 +1,20 @@
 import time
 from RatMenu import *
+from RatColors import *
 
-end = '\033[0m'
-red = '\033[91m'
-blue = '\033[94m'
-green = '\033[92m'
-white = '\033[97m'
-dgreen = '\033[32m'
-yellow = '\033[93m'
-back = '\033[7;91m'
-run = '\033[97m[~]\033[0m'
-que = '\033[94m[?]\033[0m'
-bad = '\033[91m[!]\033[0m'
-info = '\033[93m[i]\033[0m'
-debug_symbol = '\033[92m[</>]\033[0m'
-good = '\033[92m[🗸]\033[0m'
-not_loadet = '\033[91m[✗]\033[0m'
-loadet = '\033[92m[🗸]\033[0m'          
+main_color_theme = f"{white}"
+
+Secondary_color_theme = f"{yellow}"
+
+Script_status_color_found = f"{white}"
+
+Script_status_color_not_found = f"{red}"
+
+options_color = f"{white}"
+
+normal_input = f"{main_color_theme}Bitte wähle eine Option: {Secondary_color_theme}"
+
+lightmode_input = f"You sick Bastard: "
 
 def rat_print(message):
     print(f"{message}")
@@ -269,7 +267,7 @@ good = '\033[92m[🗸]\033[0m'
 not_loadet = '\033[91m[✗]\033[0m'
 loadet = '\033[92m[🗸]\033[0m'
 
-RatSpreadVarsVersion = "0.0.6"
+RatSpreadVarsVersion = "0.0.8"
 
 rat_print(f"{main_color_theme}{RatPhisher_titel}")
 sleep(0.05) 
@@ -288,9 +286,11 @@ sleep(0.05)
 rat_print(f"{main_color_theme}{titel}")
 sleep(0.05) 
 rat_print(f"{main_color_theme}{ascii}")
-sleep(0.05) 
+sleep(0.05)
 rat_print(f"{main_color_theme}Running RatSpreadVars Version: {Secondary_color_theme}{RatSpreadVarsVersion}{end}")
 sleep(1)
+rat_print(f"{main_color_theme}Running RatColors Module Version: {Secondary_color_theme}{RatColorsVersion}{end}")
+sleep(1)
 rat_print(f"{main_color_theme}Starting RatMenu Version: {Secondary_color_theme}{Version}{end}")
-
+sleep(1)
 # By Mausi Schmausi
