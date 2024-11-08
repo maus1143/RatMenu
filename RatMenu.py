@@ -15,7 +15,7 @@ import random
 #False = Aus 
 #-------------------
 
-Version = "0.1.8"
+Version = "0.1.9"
 
 DEBUG_MODE = False #Eingabe: 99
 STREAMER_MODE = False #Eingabe: 100
@@ -27,6 +27,11 @@ DoNotChangeColor = True
 SCRIPT_CHECK_ENABLED = False
 
 threshold_temp = 20
+
+onlyprint = "" 
+
+system_speed = 1.5
+default_system_speed = 0.003
 
 Show_Streamermode = True
 Show_Debugmode = True
@@ -46,6 +51,8 @@ today_date = datetime.now().strftime("%d.%m.%Y")
 aktuelle_zeit = time.strftime("%H:%M")
 current_os = platform.system().lower()
 
+bg_white = '\033[47m'
+
 if  DARKMODE is True:
     end = '\033[0m'
     red = '\033[91m'
@@ -64,22 +71,22 @@ if  DARKMODE is True:
     not_loadet = '\033[91m[✗]\033[0m'
     loadet = '\033[92m[🗸]\033[0m'
 else: 
-    end = ''
-    red = ''
-    blue = ''
-    green = ''
-    white = ''
-    dgreen = ''
-    yellow = ''
-    back = ''
-    run = '[~]'
-    que = '?]'
-    bad = '[✗]'
-    info = '[!]'
-    debug_symbol = '[</>]'
-    good = '[🗸]'
-    not_loadet = '[✗]'
-    loadet = '[🗸]'
+    end = f'{bg_white}'
+    red = f'{bg_white}'
+    blue = f'{bg_white}'
+    green = f'{bg_white}'
+    white = f'{bg_white}'
+    dgreen = f'{bg_white}'
+    yellow = f'{bg_white}'
+    back = f'{bg_white}'
+    run = f'{bg_white}[~]'
+    que = f'{bg_white}[?]'
+    bad = f'{bg_white}[✗]'
+    info = f'{bg_white}[!]'
+    debug_symbol = f'{bg_white}[</>]'
+    good = f'{bg_white}[🗸]'
+    not_loadet = f'{bg_white}[✗]'
+    loadet = f'{bg_white}[🗸]'
 
 main_color_theme = f"{white}"
 
@@ -129,8 +136,12 @@ def rat_repeat(command_list, times):
             eval(command)
 
 def rat_print(message):
-    print(f"{main_color_theme}{message}")
-    sleep(0.003)
+    if onlyprint == "":
+        print(f"{main_color_theme}{message}")
+        sleep(default_system_speed)
+    else:
+        print(f"{main_color_theme}{onlyprint}")
+        sleep(default_system_speed)
 
 def rat_print_wait(message, time):
     rat_print(f"{message}")
@@ -142,7 +153,7 @@ def rat_print_pause(message):
 
 def rat_print_error(message):
     rat_print(f"{main_color_theme}{message}")
-    sleep(2)
+    time.sleep(system_speed)
 
 def clear():
     if not DEBUG_MODE:
@@ -906,16 +917,16 @@ def pingdomain(IP):
 def is_firefox_installed():
     if platform.system() == 'Windows':
         return shutil.which("firefox") is not None
-    elif platform.system() == 'Darwin':  # macOS
+    elif platform.system() == 'Darwin':
         return os.path.exists("/Applications/Firefox.app")
-    else:  # Linux
+    else:
         return shutil.which("firefox") is not None
 
 def open_with_firefox(url):
     try:
         if platform.system() == 'Windows' or platform.system() == 'Linux':
             subprocess.Popen(['firefox', url])
-        elif platform.system() == 'Darwin':  # macOS
+        elif platform.system() == 'Darwin':
             subprocess.Popen(['/Applications/Firefox.app/Contents/MacOS/firefox', url])
     except Exception as e:
         debug(f"Fehler beim Öffnen mit Firefox: {Secondary_color_theme}{e}")
@@ -936,7 +947,7 @@ def show_shortcuts():
     rat_print(f"{main_color_theme}Verfügbare Shortcuts:")
     for number, resource in shortcuts.items():
         rat_print(f"{Secondary_color_theme}#{number}: {main_color_theme}{resource}")
-    rat_pause()
+        rat_pause()
 
 def show_me(resource):
     url_suffixes = ('.com', '.net', '.de', '.at', '.eu')
@@ -959,11 +970,11 @@ def show_me(resource):
         rat_print(f"{main_color_theme}Öffne die Datei: {Secondary_color_theme}{resource}")
         try:
             if platform.system() == 'Windows':
-                os.startfile(resource)  # Windows
+                os.startfile(resource)
             elif platform.system() == 'Darwin':
-                subprocess.call(('open', resource))  # macOS
+                subprocess.call(('open', resource))
             else:
-                subprocess.call(('xdg-open', resource))  # Linux
+                subprocess.call(('xdg-open', resource))
         except Exception as e:
             rat_print_wait(f"{main_color_theme} Fehler beim Öffnen der Datei: {e}", 5)
     
@@ -1060,8 +1071,7 @@ def start_script(script_name):
 
 def test():
     from RatSpreadVars import rat_repeat
-    rat_repeat(f"rat_print('testing.'), sleep(5), rat_print('testing..'), rat_print('testing...')",  5)
-    debug("testing")
+    show_me
 
 def info():
     menu = f"""
@@ -1143,9 +1153,8 @@ def info():
 
     rat_print_pause(menu)
 
-import whois
-
 def whois_lookup(domain):
+    import whois
     try:
         domain_info = whois.whois(domain)
 
@@ -1184,12 +1193,6 @@ def conectioncheck():
             __import__(package)
         except ImportError:
             install(package)
-
-    end = '\033[0m'
-    red = '\033[91m'
-    green = '\033[92m'
-    white = '\033[97m'
-    yellow = '\033[93m'
 
     current_date = datetime.now().strftime("%Y-%m-%d")
     log_file_path = f"Rat_network_log_{current_date}.txt"
@@ -1260,8 +1263,7 @@ def conectioncheck():
 
                 log_line = f"{ip:<20}{host:<30}{status:<15}{ping_log}"
                 write_to_log(log_line)
-
-        time.sleep(1)
+                sleep(1)
 
 def main_menu():
     global contains
@@ -1284,6 +1286,16 @@ def main_menu():
                 info()
                 continue
 
+            if option in ["cmd", "terminal"]:
+                clear()
+                rat_print("Ein neues Terminal wurde erstellt.")
+                rat_print(f"Um zum Hauptmenü zurückzukehren schreibe '{Secondary_color_theme}exit{main_color_theme}'")
+                rat_print(f"{main_color_theme}===============================================\n")
+
+                os.system("cmd")
+
+                continue
+
             if option.startswith("color "):
                 change_color(option)
                 continue
@@ -1292,6 +1304,51 @@ def main_menu():
                 script_name = option[6:].strip() 
                 start_script(script_name)
                 sys.exit(0) 
+
+            if option.startswith('command "'):
+                end_quote_index = option.find('"', 9)
+                if end_quote_index == -1:
+                    rat_print(f"Fehler: Befehl nicht korrekt formatiert.{main_color_theme}")
+                    debug(f"Fehler: Befehl nicht korrekt formatiert.{main_color_theme}")
+                    continue
+                
+                command = option[8:end_quote_index]
+                
+                rat_print(f"{main_color_theme}=============================")
+                os.system(command)
+                rat_print(f"{main_color_theme}=============================")
+                rat_print(f'{Secondary_color_theme}{command}"{main_color_theme} Wurde ausgeführt')
+
+                remaining_option = option[end_quote_index + 1:].strip() 
+                if "-p" in remaining_option: 
+                    rat_pause()
+                    main_menu()
+                else:
+                    time.sleep(5)
+                    main_menu()
+
+                remaining_option = option[end_quote_index + 1:].strip() 
+                if "-x" in remaining_option: 
+                    sys.exit(0)
+                else:
+                    time.sleep(5)
+                    main_menu()
+
+            if option.startswith("pip "):
+                pip_command = option[4:].strip()
+                os.system(f"pip {pip_command}")
+                sleep(5)
+                main_menu()
+
+            if option == ("pip"):
+                os.system(f"pip help")
+                sleep(5)
+                main_menu()
+
+            if option.startswith("sleep "):
+                sleep_time = option[5:].strip()
+                if sleep_time:
+                    time.sleep({sleep_time})
 
             if option.startswith("show me "):
                 script_name = option[8:].strip() 
@@ -1403,7 +1460,10 @@ def main_menu():
             if option in ["debug", "debug on", "debug true", "debug off", "debug false"]:
                 debug_switch()
                 continue
- 
+            if option in ["streamer", "stream", "streamer on", "streamer true", "streamer off", "streamer false"]:
+                streamer_Switch()
+                continue
+
             if option.__contains__("test"):
                 test()
                 continue
@@ -1434,7 +1494,7 @@ def main_menu():
             elif option == 9:
                 RatCreate()
             elif option == 10:
-                stop_disco()
+                stop_disco() 
                 debug("Programm wird beendet")
                 rat_print_error(f'{main_color_theme}RatSpread wird beendet')
                 sys.exit(0)
@@ -1466,4 +1526,5 @@ def main_menu():
 if __name__ == "__main__":
     disco_running = False
     main_menu()
-#By Mausi Schmausi
+
+#By Mausi Schmausites
