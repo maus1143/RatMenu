@@ -46,12 +46,12 @@ reverse = '\033[7m'
 hidden = '\033[8m'
 strikethrough = '\033[9m'
 
-RatColorsVersion = "0.0.2"
+RatColorsVersion = "0.0.3"
 
 display_load_status = True
 
 def load_status(color_name):
-    if display_load_status:
+    if display_load_status is True:
         print(f"{debug_symbol} {white}RatColors:{end} {color_name}{white} erfolgreich geladen{end}")
         time.sleep(0.1)
 
@@ -61,7 +61,6 @@ load_status(f"{green}Grün{end}")
 load_status(f"{white}Weiß{end}")
 load_status(f"{dgreen}Dunkelgrün{end}")
 load_status(f"{yellow}Gelb{end}")
-load_status(f"{back}Hintergrund Rot{end}")
 load_status(f"{purple}Lila{end}")
 load_status(f"{cyan}Cyan{end}")
 load_status(f"{orange}Orange{end}")
